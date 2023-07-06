@@ -1,6 +1,6 @@
 const app = require('./src/app')
 const PORT = process.env.PORT || 80; // backup port
-const dbconnection = require('./src/database/mongooseConnect')
+const dbconnection = require('./src/database/mongoCon')
 
 process.on('uncaughtException', (err) => {
   console.log(`UNCAUGHT EXCEPTION!\n`)
