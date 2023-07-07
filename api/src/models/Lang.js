@@ -13,23 +13,30 @@ const langSchema = new mongoose.Schema({
     maxlength: 1000,
     trim: true,
   },
-  
+
   // Array fields
   platforms: {
     type: [String],
+    maxlength: 50,
     max: 10,
     required: true,
   },
   bestFor: {
     type: [String],
+    maxlength: 100,
+    max: 10,
     required: true,
   },
   advantages: {
     type: [String],
+    maxlength: 100,
+    max: 10,
     required: true,
   },
   disadvantages: {
     type: [String],
+    maxlength: 100,
+    max: 10,
     required: true,
   },
   designedBy: {
