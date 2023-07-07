@@ -13,45 +13,53 @@ const langSchema = new mongoose.Schema({
     maxlength: 1000,
     trim: true,
   },
+  imgURL: {
+    type: String,
+    required: true,
+  },
 
   // Array fields
+  characteristics: {
+    type: [String],
+    required: true,
+    maxlength: 50,
+    required: true,
+  },
   platforms: {
     type: [String],
     maxlength: 50,
-    max: 10,
     required: true,
   },
   bestFor: {
     type: [String],
     maxlength: 100,
-    max: 10,
     required: true,
   },
   advantages: {
     type: [String],
     maxlength: 100,
-    max: 10,
     required: true,
   },
   disadvantages: {
     type: [String],
     maxlength: 100,
-    max: 10,
     required: true,
   },
   designedBy: {
     type: [String],
     required: true,
   },
-  difficulty: {
-    type: String,
-    required: true,
-  },
 
-  // Number fields
+  // Aditional fields
   yearCreated: {
     type: Number,
     required: true,
+  },
+  difficulty: {
+    type: String,
+  },
+  tags: {
+    type: String,
   },
   popularity: {
     type: Number,
