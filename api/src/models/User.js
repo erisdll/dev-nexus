@@ -1,68 +1,61 @@
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
-  // Main fields
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  age: {
-    type: Number,
-  },
-  bio: {
-    type: String,
-    maxlength: 1000,
-  },
-  imgURL: {
-    type: String,
-  },
-
-  // Selections
-  selectedLangs: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Lang',
+const userSchema = new mongoose.Schema(
+  {
+    // Main fields
+    username: {
+      type: String,
+      required: true,
+      unique: true,
     },
-  ],
-  selectedTechs: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Tech',
+    password: {
+      type: String,
+      required: true,
     },
-  ],
-  selectedSkills: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Skill',
+    email: {
+      type: String,
+      required: true,
+      unique: true,
     },
-  ],
+    bio: {
+      type: String,
+      maxlength: 1000,
+      trim: true,
+    },
+    imgURL: {
+      type: String,
+    },
 
-  // Control fields
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
-  deactivated: {
-    type: Boolean,
-    default: false,
-  },
+    // Selections
+    selectedLangs: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Lang',
+      },
+    ],
+    selectedTechs: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Tech',
+      },
+    ],
+    selectedSkills: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Skill',
+      },
+    ],
 
-  // Additional fields
-});
+    // Control fields
+    timestamps: true,
+
+    deactivated: {
+      type: Boolean,
+      default: false,
+    },
+  },
+);
+
 
 const User = mongoose.model('User', userSchema);
 
