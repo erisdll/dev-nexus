@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
+  // Main fields
   username: {
     type: String,
     required: true,
@@ -10,20 +11,43 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  // Outros campos relevantes do usuário, como nome, email, etc.
-  name: {
-    type: String,
-    required: true,
-  },
   email: {
     type: String,
     required: true,
     unique: true,
   },
-  // Campos adicionais conforme necessário
-  // ...
+  age: {
+    type: Number,
+  },
+  bio: {
+    type: String,
+    maxlength: 1000,
+  },
+  imgURL: {
+    type: String,
+  },
 
-  // Campos para controle de data de criação e atualização
+  // Selections
+  selectedLangs: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Lang',
+    },
+  ],
+  selectedTechs: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Tech',
+    },
+  ],
+  selectedSkills: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Skill',
+    },
+  ],
+
+  // Control fields
   createdAt: {
     type: Date,
     default: Date.now,
@@ -32,6 +56,12 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  deactivated: {
+    type: Boolean,
+    default: false,
+  },
+
+  // Additional fields
 });
 
 const User = mongoose.model('User', userSchema);
