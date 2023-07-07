@@ -1,0 +1,38 @@
+{
+  "_id": "613d9e3e1e99a45678901234",
+  "name": "JavaScript",
+  "description": "JavaScript is a high-level, interpreted programming language. It is widely used for front-end web development and has gained popularity in recent years for back-end development as well. JavaScript allows developers to add interactivity and dynamic functionality to web pages. It is supported by all modern web browsers, making it a versatile choice for web development.JavaScript is known for its ease of use and flexibility. It has a large and active community, providing abundant resources and libraries for developers. JavaScript's loose typing allows for more flexibility in coding but can also lead to potential pitfalls. Overall, JavaScript is a fundamental language in web development, offering powerful capabilities and a vast ecosystem of frameworks and tools.",
+  "imgURL": "https://example.com/js-logo.png",
+  "platforms": ["Web", "Mobile", "Node.js"],
+  "bestFor": ["Front-end Development", "Back-end Development"],
+  "characteristics": [
+    "Procedural",
+    "Functional",
+    "Object-oriented",
+    "Event-driven",
+    "Dynamic Typing",
+    "Prototype-based",
+    "Interpreted",
+    "Single-threaded",
+    "First-class Functions",
+    "Asynchronous"
+  ],
+  "advantages": [
+    "Versatile",
+    "Large Community",
+    "Client-side Interactivity",
+    "Easy to Learn",
+    "Extensive Libraries"
+  ],
+  "disadvantages": [
+    "Browser Compatibility",
+    "Loose Typing",
+    "Security Vulnerabilities",
+    "Inconsistent Language Constructs",
+    "Global Namespace Pollution"
+  ],
+  "designedBy": ["Brendan Eich"],
+  "difficulty": "Moderate",
+  "yearCreated": 1995,
+  "popularity": 10
+}
