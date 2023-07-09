@@ -1,4 +1,4 @@
-const app = require('./api/src/app')
+const app = require('./src/app')
 const PORT = process.env.PORT || 3000; // backup port
 
 
