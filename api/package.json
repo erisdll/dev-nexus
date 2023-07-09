@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "description": "readme",
   "main": "server.js",
-  "directories": {
-    "test": "test"
-  },
+
   "scripts": {
     "start": "node server.js",
-    "test": "jest"
+    "dev:nodemon": "nodemon server.js",
+    "test": "jest",
+    "test:watch": "jest --watchAll"
   },
   "repository": {
     "type": "git",
@@ -20,7 +20,7 @@
     "express",
     "mongodb"
   ],
-  "author": "cyberis",
+  "author": "nearlyerika",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/nearlyerika/on22-b3-projeto-final/issues"
