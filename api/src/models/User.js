@@ -42,7 +42,7 @@ const userSchema = new mongoose.Schema(
     selectedSkills: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Skill',
+        ref: 'Area',
       },
     ],
 

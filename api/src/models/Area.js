@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const techSchema = new mongoose.Schema({
+const areaSchema = new mongoose.Schema({
   // Main Fields
   name: {
     type: String,
@@ -24,15 +24,10 @@ const techSchema = new mongoose.Schema({
     maxlength: 100,
     required: true,
   },
-  advantages: {
+  useCases: {
     type: [String],
-    maxlength: 100,
     required: true,
-  },
-  disadvantages: {
-    type: [String],
     maxlength: 100,
-    required: true,
   },
 
   // Aditional Fields
@@ -51,7 +46,9 @@ const techSchema = new mongoose.Schema({
   techs: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Area',
+      ref: 'Tech',
     },
   ],
 });
+
+const Area = mongoose.Model('Area', areaSchema);
