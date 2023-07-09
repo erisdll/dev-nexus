@@ -1,6 +1,6 @@
 const app = require('./src/app')
-const PORT = process.env.PORT || 80; // backup port
-const dbconnection = require('./src/database/mongoCon')
+const PORT = process.env.PORT || 3000; // backup port
+
 
 process.on('uncaughtException', (err) => {
   console.log(`UNCAUGHT EXCEPTION!\n`)
@@ -12,8 +12,6 @@ process.on('uncaughtException', (err) => {
 
 app.listen( 
   PORT, () => {
-    console.log(`Server on!\nApp listening on port ${PORT}`)
+    console.log(`Server on!\nListening on port ${PORT}`)
   }
 )
-
-dbconnection.connect()
