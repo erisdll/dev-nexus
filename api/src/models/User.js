@@ -47,7 +47,6 @@ const userSchema = new mongoose.Schema(
     ],
 
     // Control fields
-    timestamps: true,
 
     deactivated: {
       type: Boolean,
