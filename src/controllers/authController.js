@@ -61,9 +61,10 @@ exports.login = async (req, res) => {
 exports.logout = (req, res) => {
   res.clearCookie('token');
   res.status(200).json({ message: 'User logged out successfully' });
-  if (req.body != undefined) {
-    const { username } = req.body;
-    return console.log(`User ${username} logged out.`);
+  if (!req.body.username) {
+    return console.log(`Unidentified user logged out.`);
   }
-  console.log(`Unidentified user logged out.`);
+  const { username } = req.body;
+  return console.log(`User ${username} logged out.`);
+
 };
