@@ -13,7 +13,6 @@ const techRoutes = require('./routes/techRoutes');
 const app = express();
 
 app.use(express.json());
-
 app.use(authRoutes);
 // app.use(userRoutes);
 // app.use(langRoutes);
