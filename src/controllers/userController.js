@@ -28,12 +28,12 @@ exports.getUser = async (req, res) => {
   }
 };
 
-exports.updateUser = async (req, res) => {}
+exports.updateProfile = async (req, res) => {}
 
-exports.updateUserItems = async (req, res) => {}
+exports.updateSelections = async (req, res) => {}
 
 exports.updatePassword = async (req, res) => {}
 
-exports.deactivateAcc = async (req, res) => {}
+exports.deactivateUser = async (req, res) => {}
 
 exports.deleteUser = async (req, res) => {}
