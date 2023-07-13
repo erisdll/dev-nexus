@@ -20,7 +20,6 @@ exports.registerUser = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: 'Failed to create account!',
-      error: error.message
     });
   }
 };
@@ -38,16 +37,17 @@ exports.login = async (req, res) => {
     if (!validPass) {
       throw new Error('Invalid user data')
     }
-    const token = await jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
+    const payload = {
+      userId: user._id,
+      role: user.role,
+    };
+    const token = await jwt.sign(payload, process.env.JWT_SECRET);
     res.status(200).json(token);
   } catch (error) {
     if (error.message === 'Invalid user data') {
       return res.status(401).json({ message: 'Invalid username or password!' });
     } else {
-      return res.status(500).json({
-        message: 'Failed to login!',
-        error: error.message,
-      });
+      return res.status(500).json({});
     }
   }
 };
@@ -55,5 +55,5 @@ exports.login = async (req, res) => {
 // Logout
 exports.logout = (req, res) => {
   res.clearCookie('token');
-  res.status(200).json({ message: 'User logged out successfully' });
+  res.status(200);
 };

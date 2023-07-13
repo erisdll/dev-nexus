@@ -46,6 +46,11 @@ const userSchema = new mongoose.Schema({
   ],
 
   // Control fields
+  // (usr/mod/adm)
+  role: {
+    type: String,
+    default: 'user'
+  },
 
   deactivated: {
     type: Boolean,
