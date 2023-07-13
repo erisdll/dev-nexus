@@ -33,10 +33,7 @@
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "pug": "^3.0.2",
-    "http-errors": "~1.6.3",
-    "debug": "~2.6.9",
-    "morgan": "~1.9.1",
-    "cookie-parser": "~1.4.4"
+    "morgan": "~1.9.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.22",
