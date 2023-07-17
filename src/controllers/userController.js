@@ -8,7 +8,8 @@ const User = require('../models/User');
 // -------------------
 // -----> TO DO <-----
 // -------------------
-/* exports.createUser = async (req, res) => {
+
+exports.createUser = async (req, res) => {
   try {
     const {
       username,
@@ -42,8 +43,6 @@ const User = require('../models/User');
     });
   }
 };
-*/
-
 
 // Verifies JWT token, fetches user profile from DB
 // Throws error if no valid auth or if no match

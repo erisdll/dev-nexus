@@ -55,3 +55,7 @@ const techSchema = new mongoose.Schema({
     },
   ],
 });
+
+const Tech = mongoose.model('Tech', techSchema);
+
+module.exports = Tech;
