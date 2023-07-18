@@ -9,8 +9,10 @@ const areaSchema = new mongoose.Schema({
   },
   description: {
     type: String,
+    minlength: 100,
     maxlength: 1000,
     required: true,
+    trim: true,
   },
   imgURL: {
     type: String,

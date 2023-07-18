@@ -18,6 +18,7 @@ const userSchema = new mongoose.Schema({
   },
   bio: {
     type: String,
+    minlength: 100,
     maxlength: 1000,
     trim: true,
   },
@@ -49,7 +50,7 @@ const userSchema = new mongoose.Schema({
   // (usr/mod/adm)
   role: {
     type: String,
-    default: 'user'
+    default: 'user',
   },
 
   deactivated: {

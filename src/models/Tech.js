@@ -9,9 +9,10 @@ const techSchema = new mongoose.Schema({
   },
   description: {
     type: String,
+    minlength: 100,
     maxlength: 1000,
     required: true,
-    unique: true,
+    trim: true,
   },
   imgUrl: {
     type: String,
