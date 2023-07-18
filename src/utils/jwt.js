@@ -1,17 +1,31 @@
 const jwt = require('jsonwebtoken');
 
-const verifyToken = (req, res, next) => {
-  const token = req.headers.authorization;
+exports.verifyRole = (req, res, next) => {
+  try {
+    const authHeader = req.get('authorization');
 
-  if (token) {
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-      if (err) {
-        return res.status(403);
-      }
-      req.user = user;
-      next();
-    });
-  } else {
-    res.status(401);
+    if (!authHeader) {
+      throw new Error('Unauthorized!');
+    }
+
+    const token = authHeader.split(' ')[1];
+
+    if (!token) {
+      throw new Error('Unauthorized!');
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (decoded.user.role !== 'mod' && decoded.user.role !== 'admin') {
+      throw new Error('Unauthorized!');
+    }
+    next();
+  } catch (err) {
+    if (err.message === 'Unauthorized!') {
+      res.status(401).json({
+        status: 'fail',
+        message: 'Unauthorized!'
+      })
+    }
   }
 };
