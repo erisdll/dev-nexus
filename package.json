@@ -34,13 +34,13 @@
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.3.1",
     "morgan": "~1.9.1",
-    "pug": "^3.0.2",
-    "swagger-autogen": "^2.23.5",
-    "swagger-ui-express": "^5.0.0"
+    "pug": "^3.0.2"
   },
   "devDependencies": {
     "jest": "^29.6.0",
     "nodemon": "^2.0.22",
-    "prettier": "3.0.0"
+    "prettier": "3.0.0",
+    "swagger-autogen": "^2.23.5",
+    "swagger-ui-express": "^5.0.0"
   }
 }
