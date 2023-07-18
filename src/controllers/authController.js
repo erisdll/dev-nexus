@@ -4,7 +4,7 @@ const User = require('../models/User');
 
 // Register new user: destructures req data, hashes password.
 // Saves user to DB, catches error if needed.
-exports.registerUser = async (req, res) => {
+exports.signup = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
     const hashPass = await bcrypt.hash(password, 10);
@@ -15,12 +15,21 @@ exports.registerUser = async (req, res) => {
     });
     await newUser.save();
     res.status(201).json({
+      status: 'success',
       message: 'Account created succesfully!',
     });
-  } catch (error) {
-    res.status(500).json({
-      message: 'Failed to create account!',
-    });
+  } catch (err) {
+    if (err.name === 'ValidationError') {
+      res.status(400).json({
+        status: 'fail',
+        message: 'Bad request!',
+      });
+    } else {
+      res.status(500).json({
+        status: 'fail',
+        message: 'Internal server error!',
+      });
+    }
   }
 };
 
@@ -29,25 +38,37 @@ exports.registerUser = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { username, email, password } = req.body;
-    const user = await User.findOne({ $or: [{ username: username }, { email: email }] });
+    const user = await User.findOne({
+      $or: [{ username: username }, { email: email }],
+    });
     if (!user) {
-      throw new Error('Invalid user data')
+      throw new Error('Invalid Data')
     }
     const validPass = await bcrypt.compare(password, user.password);
     if (!validPass) {
-      throw new Error('Invalid user data')
+      throw new Error('Invalid Data')
     }
     const payload = {
       userId: user._id,
       role: user.role,
     };
     const token = await jwt.sign(payload, process.env.JWT_SECRET);
-    res.status(200).json(token);
+    res.status(200).json({
+      status: 'success',
+      message: 'Logged in successfully!',
+      token,
+    });
   } catch (error) {
-    if (error.message === 'Invalid user data') {
-      return res.status(401).json({ message: 'Invalid username or password!' });
+    if (error.message === 'Invalid Data') {
+      return res.status(401).json({
+        status: 'fail',
+        message: 'Invalid username or password!',
+      });
     } else {
-      return res.status(500).json({});
+      res.status(500).json({
+        status: 'fail',
+        message: 'Internal server error!',
+      });
     }
   }
 };
