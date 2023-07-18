@@ -1,28 +1,31 @@
 require('dotenv-safe').config();
-const cors = require('cors');
+
 const express = require('express');
+const cors = require('cors');
 const mongoose = require('mongoose');
+const swaggerUi = require('swagger-ui-express');
+
+const errorHandler = require('./utils/errorHandler');
+const swaggerFile = require('../tools/swagger_output.json');
 const dbconnection = require('./config/db');
-const authRoutes = require('./routes/authRoutes');
-const userRoutes = require('./routes/userRoutes');
-const langRoutes = require('./routes/langRoutes');
-const areaRoutes = require('./routes/areaRoutes');
-const techRoutes = require('./routes/techRoutes');
+const authRouter = require('./routes/authRouter');
+const areaRouter = require('./routes/areaRouter');
+const langRouter = require('./routes/langRouter');
+const techRouter = require('./routes/techRouter');
+// const userRouter = require('./routes/userRouter');
+
 
 const app = express();
 
-app.use(express.json());
+app.use(express.json()).use(cors()).use(errorHandler);
+
 dbconnection.connect();
 
-app.use(authRoutes);
-// app.use(userRoutes);
-// app.use(langRoutes);
-// app.use(techRoutes);
-// app.use(areaRoutes);
-
-const swaggerUi = require('swagger-ui-express')
-const swaggerFile = require('../swagger/swagger_output.json')
-
-app.use('./documentation-route', swaggerUi.serve, swaggerUi.setup(swaggerFile))
+app.use('/', authRouter);
+app.use('/areas-of-interest/', areaRouter);
+app.use('/programming-languages/', langRouter);
+app.use('/technologies/', techRouter);
+// app.use('/user/', userRouter);
+app.use('/api-docs/', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 
 module.exports = app;

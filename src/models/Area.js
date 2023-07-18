@@ -11,9 +11,8 @@ const areaSchema = new mongoose.Schema({
     type: String,
     maxlength: 1000,
     required: true,
-    unique: true,
   },
-  imgUrl: {
+  imgURL: {
     type: String,
     required: true,
   },
