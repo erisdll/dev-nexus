@@ -4,7 +4,7 @@ const User = require('../models/User');
 
 // Register new user: destructures req data, hashes password.
 // Saves user to DB, catches error if needed.
-exports.signup = async (req, res, next) => {
+exports.signup = async (req, res) => {
   try {
     const { username, email, password } = req.body;
     const hashPass = await bcrypt.hash(password, 10);
@@ -20,9 +20,17 @@ exports.signup = async (req, res, next) => {
     });
   } catch (err) {
     if (err.name === 'ValidationError') {
-      res.status(400).json({
+      const validationErrors = [];
+      for (const field in err.errors) {
+        validationErrors.push({
+          field: err.errors[field].path,
+          message: err.errors[field].message,
+        });
+      }
+      return res.status(400).json({
         status: 'fail',
-        message: 'Bad request!',
+        message: 'Validation error!',
+        errors: validationErrors,
       });
     } else {
       res.status(500).json({
@@ -50,7 +58,7 @@ exports.login = async (req, res) => {
     }
     const payload = {
       userId: user._id,
-      role: user.role,
+      isAdmin: user.isAdmin,
     };
     const token = await jwt.sign(payload, process.env.JWT_SECRET);
     res.status(200).json({
@@ -72,6 +80,8 @@ exports.login = async (req, res) => {
     }
   }
 };
+
+
 
 // Logout
 exports.logout = (req, res) => {

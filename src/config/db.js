@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+mongoose.set('debug', true);
 const DB_CONNECT = process.env.DB_URL
   .replace('<PASSWORD>', process.env.DB_PASS)
   .replace('<USERNAME>', process.env.DB_USER);

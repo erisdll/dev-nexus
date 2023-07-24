@@ -5,7 +5,7 @@ exports.createLang = async (req, res) => {
     const newLang = await Lang.create(req.body);
 
     res.status(201).json({
-      status: 'Success',
+      status: 'success',
       message: 'Resource created successfully!',
       data: { newLang },
     });
@@ -33,7 +33,7 @@ exports.getAllLangs = async (req, res) => {
     }
 
     res.status(200).json({
-      status: 'Success',
+      status: 'success',
       data: { langs },
     });
   } catch (err) {
@@ -55,7 +55,9 @@ exports.getLang = async (req, res) => {
   try {
     const langName = req.params.name
       .split('-')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .map(word => {
+        return word.charAt(0).toUpperCase() + word.slice(1)
+      })
       .join(' ');
     const lang = await Lang.findOne({ name: langName });
 
@@ -64,7 +66,7 @@ exports.getLang = async (req, res) => {
     }
 
     res.status(200).json({
-      status: 'Success',
+      status: 'success',
       data: { lang },
     });
   } catch (err) {
@@ -86,7 +88,9 @@ exports.updateLang = async (req, res) => {
   try {
     const langName = req.params.name
       .split('-')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .map(word => {
+        return word.charAt(0).toUpperCase() + word.slice(1)
+      })
       .join(' ');
     const updatedlang = await Lang.findOneAndUpdate(
       { langName },
@@ -99,7 +103,7 @@ exports.updateLang = async (req, res) => {
     }
 
     res.status(200).json({
-      status: 'Success',
+      status: 'success',
       message: 'Resource updated successfully!',
       data: { updatedlang },
     });
@@ -124,7 +128,9 @@ exports.deleteLang = async (req, res) => {
   try {
     const langName = req.params.name
       .split('-')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .map(word => {
+        return word.charAt(0).toUpperCase() + word.slice(1)
+      })
       .join(' ');
     const deletedlang = await Lang.findOneAndDelete({ langName });
 

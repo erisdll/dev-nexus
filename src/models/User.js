@@ -18,9 +18,10 @@ const userSchema = new mongoose.Schema({
   },
   bio: {
     type: String,
-    minlength: 100,
+    minlength: 50,
     maxlength: 1000,
     trim: true,
+    default: "Hi, I'm a DevNexus user! I love coding and learning new technologies. :)"
   },
   imgURL: {
     type: String,
@@ -47,10 +48,9 @@ const userSchema = new mongoose.Schema({
   ],
 
   // Control fields
-  // (usr/mod/adm)
-  role: {
-    type: String,
-    default: 'user',
+  isAdmin: {
+    type: Boolean,
+    default: false,
   },
 
   deactivated: {

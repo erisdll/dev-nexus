@@ -5,7 +5,7 @@ exports.createArea = async (req, res) => {
     const newArea = await Area.create(req.body);
 
     res.status(201).json({
-      status: 'Success',
+      status: 'success',
       message: 'Resource created successfully!',
       data: { newArea },
     });
@@ -33,7 +33,7 @@ exports.getAllAreas = async (req, res) => {
     }
 
     res.status(200).json({
-      status: 'Success',
+      status: 'success',
       data: { areas },
     });
   } catch (err) {
@@ -55,7 +55,9 @@ exports.getArea = async (req, res) => {
   try {
     const areaName = req.params.name
       .split('-')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .map(word => {
+        return word.charAt(0).toUpperCase() + word.slice(1)
+      })
       .join(' ');
     const area = await Area.findOne({ name: areaName });
 
@@ -64,7 +66,7 @@ exports.getArea = async (req, res) => {
     }
 
     res.status(200).json({
-      status: 'Success',
+      status: 'success',
       data: { area },
     });
   } catch (err) {
@@ -86,7 +88,9 @@ exports.updateArea = async (req, res) => {
   try {
     const areaName = req.params.name
       .split('-')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .map(word => {
+        return word.charAt(0).toUpperCase() + word.slice(1)
+      })
       .join(' ');
     const updatedArea = await Area.findOneAndUpdate(
       { areaName },
@@ -99,7 +103,7 @@ exports.updateArea = async (req, res) => {
     }
 
     res.status(200).json({
-      status: 'Success',
+      status: 'success',
       message: 'Resource updated successfully!',
       data: { updatedArea },
     });
@@ -124,7 +128,9 @@ exports.deleteArea = async (req, res) => {
   try {
     const areaName = req.params.name
       .split('-')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .map(word => {
+        return word.charAt(0).toUpperCase() + word.slice(1)
+      })
       .join(' ');
     const deletedArea = await Area.findOneAndDelete({ areaName });
 
