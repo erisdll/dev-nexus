@@ -18,7 +18,10 @@ const authenticateUser = async (req, res, next) => {
 
     next();
   } catch (error) {
-    if (error.message === 'Unauthorized!') {
+    if (
+      error.message === 'No header!' ||
+      error.message === 'Invalid Token!'
+    ) {
       return res.status(401).json({
         status: 'failure',
         message: error.message
@@ -34,7 +37,7 @@ const authenticateUser = async (req, res, next) => {
 const isAdmin = (req, res, next) => {
   const isAdmin = req.user.isAdmin;
 
-  if (isAdmin) {
+  if (isAdmin === true) {
     next();
   } else {
     return res.status(403).json({
