@@ -1,26 +1,48 @@
 const Lang = require('../models/Lang');
+const { capitalizeName } = require('../utils/capitalizeTitle')
 
 exports.createLang = async (req, res) => {
   try {
-    const newLang = await Lang.create(req.body);
+    const {
+      name,
+      description,
+      imgURL,
+      keyFeatures,
+      advantages,
+      disadvantages,
+      designedBy,
+      yearCreated,
+      popularity,
+      langs,
+      techs,
+    } = req.body
 
-    res.status(201).json({
+    const newLang = new Lang({
+      name,
+      description,
+      imgURL,
+      keyFeatures,
+      advantages,
+      disadvantages,
+      designedBy,
+      yearCreated,
+      popularity,
+      langs,
+      techs,
+    })
+
+    const savedLang = await newLang.save();
+
+    return res.status(201).json({
       status: 'success',
       message: 'Resource created successfully!',
-      data: { newLang },
+      data: { savedLang },
     });
   } catch (err) {
-    if (err.name === 'ValidationError') {
-      res.status(400).json({
-        status: 'fail',
-        message: 'Bad request!',
-      });
-    } else {
-      res.status(500).json({
-        status: 'fail',
-        message: 'Internal server error',
-      });
-    }
+    return res.status(500).json({
+      status: 'fail',
+      message: 'Internal server error',
+    });
   }
 };
 
@@ -32,18 +54,24 @@ exports.getAllLangs = async (req, res) => {
       throw new Error('Not Found');
     }
 
-    res.status(200).json({
+    const langsList = langs.map(lang => ({
+      name: lang.name,
+      description: lang.description,
+      imgURL: lang.imgURL
+    }));
+
+    return res.status(200).json({
       status: 'success',
-      data: { langs },
+      data: { langsList },
     });
   } catch (err) {
     if (err.message === 'Not Found') {
-      res.status(404).json({
+      return res.status(404).json({
         status: 'fail',
         message: 'Resource not found!',
       });
     } else {
-      res.status(500).json({
+      return res.status(500).json({
         status: 'fail',
         message: 'Internal server error',
       });
@@ -53,30 +81,27 @@ exports.getAllLangs = async (req, res) => {
 
 exports.getLang = async (req, res) => {
   try {
-    const langName = req.params.name
-      .split('-')
-      .map(word => {
-        return word.charAt(0).toUpperCase() + word.slice(1)
-      })
-      .join(' ');
-    const lang = await Lang.findOne({ name: langName });
+    const langName = capitalizeName(req.params.name);
+    const lang = await Lang.findOne({ name: langName })
+      .populate('areas')
+      .populate('techs');
 
     if (!lang) {
       throw new Error('Not Found');
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       status: 'success',
       data: { lang },
     });
   } catch (err) {
     if (err.message === 'Not Found') {
-      res.status(404).json({
+      return res.status(404).json({
         status: 'fail',
         message: 'Resource not found!',
       });
     } else {
-      res.status(500).json({
+      return res.status(500).json({
         status: 'fail',
         message: 'Internal server error',
       });
@@ -86,12 +111,7 @@ exports.getLang = async (req, res) => {
 
 exports.updateLang = async (req, res) => {
   try {
-    const langName = req.params.name
-      .split('-')
-      .map(word => {
-        return word.charAt(0).toUpperCase() + word.slice(1)
-      })
-      .join(' ');
+    const langName = capitalizeName(req.params.name);
     const updatedlang = await Lang.findOneAndUpdate(
       { langName },
       { $set: req.body },
@@ -102,21 +122,24 @@ exports.updateLang = async (req, res) => {
       throw new Error('Not Found');
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       status: 'success',
       message: 'Resource updated successfully!',
       data: { updatedlang },
     });
   } catch (err) {
     if (err.name === 'ValidationError') {
-      res.status(400).json({ message: 'Bad request!' });
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Bad request!'
+      });
     } else if (err.message === 'Not Found') {
-      res.status(404).json({
+      return res.status(404).json({
         status: 'fail',
         message: 'Resource not found!',
       });
     } else {
-      res.status(500).json({
+      return res.status(500).json({
         status: 'fail',
         message: 'Internal server error',
       });
@@ -126,31 +149,25 @@ exports.updateLang = async (req, res) => {
 
 exports.deleteLang = async (req, res) => {
   try {
-    const langName = req.params.name
-      .split('-')
-      .map(word => {
-        return word.charAt(0).toUpperCase() + word.slice(1)
-      })
-      .join(' ');
+    const langName = capitalizeName(req.params.name);
     const deletedlang = await Lang.findOneAndDelete({ langName });
 
     if (!deletedlang) {
       throw new Error('Not Found');
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       status: 'success',
-      message: 'Resource deleted successfully!',
-      data: { deletedlang },
+      message: `Resource named ${deletedlang.name} was deleted successfully!`,
     });
   } catch (err) {
     if (err.message === 'Not Found') {
-      res.status(404).json({
+      return res.status(404).json({
         status: 'fail',
-        message: 'Resource not deleted!',
+        message: 'Error! Resource was not found or has already been deleted!',
       });
     } else {
-      res.status(500).json({
+      return res.status(500).json({
         status: 'fail',
         message: 'Internal server error',
       });

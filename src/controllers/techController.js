@@ -1,26 +1,44 @@
 const Tech = require('../models/Tech');
+const { capitalizeName } = require('../utils/capitalizeTitle')
 
 exports.createTech = async (req, res) => {
   try {
-    const newTech = await Tech.create(req.body);
+    const {
+      name,
+      description,
+      imgURL,
+      keyFeatures,
+      advantages,
+      disadvantages,
+      popularity,
+      langs,
+      areas,
+    } = req.body
 
-    res.status(201).json({
+    const newTech = new Tech({
+      name,
+      description,
+      imgURL,
+      keyFeatures,
+      advantages,
+      disadvantages,
+      popularity,
+      langs,
+      areas,
+    })
+
+    const savedTech = await newTech.save();
+
+    return res.status(201).json({
       status: 'success',
       message: 'Resource created successfully!',
-      data: { newTech },
+      data: { savedTech },
     });
   } catch (err) {
-    if (err.name === 'ValidationError') {
-      res.status(400).json({
-        status: 'fail',
-        message: 'Bad request!',
-      });
-    } else {
-      res.status(500).json({
-        status: 'fail',
-        message: 'Internal server error',
-      });
-    }
+    return res.status(500).json({
+      status: 'fail',
+      message: 'Internal server error',
+    });
   }
 };
 
@@ -32,18 +50,24 @@ exports.getAllTechs = async (req, res) => {
       throw new Error('Not Found');
     }
 
-    res.status(200).json({
+    const techsList = langs.map(tech => ({
+      name: tech.name,
+      description: tech.description,
+      imgURL: tech.imgURL
+    }));
+
+    return res.status(200).json({
       status: 'success',
-      data: { techs },
+      data: { techsList },
     });
   } catch (err) {
     if (err.message === 'Not Found') {
-      res.status(404).json({
+      return res.status(404).json({
         status: 'fail',
         message: 'Resource not found!',
       });
     } else {
-      res.status(500).json({
+      return res.status(500).json({
         status: 'fail',
         message: 'Internal server error',
       });
@@ -53,30 +77,27 @@ exports.getAllTechs = async (req, res) => {
 
 exports.getTech = async (req, res) => {
   try {
-    const techName = req.params.name
-      .split('-')
-      .map(word => {
-        return word.charAt(0).toUpperCase() + word.slice(1);
-      })
-      .join(' '); 
-    const tech = await Tech.findOne({ name: techName });
+    const techName = capitalizeName(req.params.name);
+    const tech = await Tech.findOne({ name: techName })
+      .populate('langs')
+      .populate('areas');
 
     if (!tech) {
       throw new Error('Not Found');
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       status: 'success',
       data: { tech },
     });
   } catch (err) {
     if (err.message === 'Not Found') {
-      res.status(404).json({
+      return res.status(404).json({
         status: 'fail',
         message: 'Resource not found!',
       });
     } else {
-      res.status(500).json({
+      return res.status(500).json({
         status: 'fail',
         message: 'Internal server error',
       });
@@ -86,12 +107,7 @@ exports.getTech = async (req, res) => {
 
 exports.updateTech = async (req, res) => {
   try {
-    const techName = req.params.name
-      .split('-')
-      .map(word => {
-        return word.charAt(0).toUpperCase() + word.slice(1);
-      })
-      .join(' ');
+    const techName = capitalizeName(req.params.name);
     const updatedtech = await Tech.findOneAndUpdate(
       { techName },
       { $set: req.body },
@@ -102,21 +118,24 @@ exports.updateTech = async (req, res) => {
       throw new Error('Not Found');
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       status: 'success',
       message: 'Resource updated successfully!',
       data: { updatedtech },
     });
   } catch (err) {
     if (err.name === 'ValidationError') {
-      res.status(400).json({ message: 'Bad request!' });
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Bad request!'
+      });
     } else if (err.message === 'Not Found') {
-      res.status(404).json({
+      return res.status(404).json({
         status: 'fail',
         message: 'Resource not found!',
       });
     } else {
-      res.status(500).json({
+      return res.status(500).json({
         status: 'fail',
         message: 'Internal server error',
       });
@@ -126,31 +145,25 @@ exports.updateTech = async (req, res) => {
 
 exports.deleteTech = async (req, res) => {
   try {
-    const techName = req.params.name
-      .split('-')
-      .map(word => {
-        return word.charAt(0).toUpperCase() + word.slice(1);
-      })
-      .join(' ');
+    const techName = capitalizeName(req.params.name);
     const deletedtech = await Tech.findOneAndDelete({ techName });
 
     if (!deletedtech) {
       throw new Error('Not Found');
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       status: 'success',
-      message: 'Resource deleted successfully!',
-      data: { deletedtech },
+      message: `Resource named ${deletedtech.name} was deleted successfully!`,
     });
   } catch (err) {
     if (err.message === 'Not Found') {
-      res.status(404).json({
+      return res.status(404).json({
         status: 'fail',
-        message: 'Resource not deleted!',
+        message: 'Error! Resource was not found or has already been deleted!',
       });
     } else {
-      res.status(500).json({
+      return res.status(500).json({
         status: 'fail',
         message: 'Internal server error',
       });
