@@ -6,6 +6,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
+    lowercase: true,
+    validate: {
+      validator: function (username) {
+        return !/\s/.test(username);
+      },
+      message: 'Usernames cannot contain spaces!',
+    },
   },
   password: {
     type: String,
@@ -15,6 +22,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
+  },
+  fullName: {
+    type: String,
+    maxlength: 100,
+  },
+  location: {
+    type: String,
   },
   bio: {
     type: String,
@@ -52,7 +66,13 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  lastLogin: {
+    type: Date,
+  },
   deactivated: {
     type: Boolean,
     default: false,

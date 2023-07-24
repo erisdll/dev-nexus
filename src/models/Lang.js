@@ -51,7 +51,7 @@ const langSchema = new mongoose.Schema({
   },
 
   // Selections
-  bestFor: [
+  areas: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Area',

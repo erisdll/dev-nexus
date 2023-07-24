@@ -49,7 +49,7 @@ const techSchema = new mongoose.Schema({
       ref: 'Lang',
     },
   ],
-  techs: [
+  areas: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Area',
