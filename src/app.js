@@ -17,6 +17,7 @@ const userRouter = require('./routes/userRouter');
 const app = express();
 
 app.use(express.json()).use(cors());
+app.use(express.static('public'));
 
 dbconnection.connect();
 

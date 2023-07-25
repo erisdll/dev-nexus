@@ -272,30 +272,47 @@ exports.updateUserProfile = async (req, res) => {
 exports.getUserSelections = async (req, res) => { 
   try {
     const { username } = req.params;
+    const selections = req.query.selections || '';
+    const validFields = selections.split('+').filter((field) => field.trim());
+    const selectionOptions = {}
+
+    if (validFields.includes('languages')) {
+      selectionOptions.selectedLangs = 1;
+    }
+    if (validFields.includes('areas-of-interest')) {
+      selectionOptions.selectedAreas = 1;
+    }
+    if (validFields.includes('technologies')) {
+      selectionOptions.selectedTechs = 1;
+    }
+
     const user = await User.findOne(
       { username: { $regex: new RegExp(`^${username}$`, 'i') } },
-      {
-        _id: 0, __v: 0, password: 0,
-        isAdmin: 0, createdAt: 0,
-        lastLogin: 0, deactivated: 0,
-      },
+      selectionOptions
     )
-    .populate('selectedLangs')
-    .populate('selectedAreas')
-    .populate('selectedTechs')
     .lean();
-    
+
     if (!user) {
       throw new Error('Not Found');
     }
-    const selections = {
-      selectedLangs: user.selectedLangs,
-      selectedAreas: user.selectedAreas,
-      selectedTechs: user.selectedTechs,
-    };
+
+    const userSelections = {};
+    if (validFields.includes('languages')) {
+      userSelections.selectedLangs = user.selectedLangs;
+    }
+    if (validFields.includes('areas-of-interest')) {
+      userSelections.selectedAreas = user.selectedAreas;
+    }
+    if (validFields.includes('technologies')) {
+      userSelections.selectedTechs = user.selectedTechs;
+    }
+
     res.status(200).json({
       status: 'success',
-      data: { selections },
+      data: {
+        username,
+        selections: userSelections
+      },
     });
   } catch (err) {
     if (err.message === 'Not Found') {
@@ -310,16 +327,27 @@ exports.getUserSelections = async (req, res) => {
       });
     }
   }
-} // DONE
+}
+ // DONE
 
 exports.updateUserSelections = async (req, res) => {
   try {
     const { username } = req.params;
-    const { selectedLangs, selectedAreas, selectedTechs } = req.body;
+    const { selectionType } = req.query;
+    const { selections } = req.body;
+
+    if (!['languages', 'areas-of-interest', 'technologies'].includes(selectionType)) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Bad request! Invalid query.',
+      });
+    }
+
+    const updateQuery = { [selectionType]: selections };
 
     const user = await User.findOneAndUpdate(
       { username: { $regex: new RegExp(`^${username}$`, 'i') } },
-      { selectedLangs, selectedAreas, selectedTechs },
+      updateQuery,
       { new: true }
     );
 
@@ -329,11 +357,9 @@ exports.updateUserSelections = async (req, res) => {
 
     res.status(200).json({
       status: 'success',
-      message: 'User selections updated successfully!',
+      message: `User ${selectionType} selection updated successfully!`,
       data: {
-        selectedLangs: user.selectedLangs,
-        selectedAreas: user.selectedAreas,
-        selectedTechs: user.selectedTechs,
+        [selectionType]: user[selectionType],
       },
     });
   } catch (err) {
@@ -349,7 +375,7 @@ exports.updateUserSelections = async (req, res) => {
       });
     }
   }
-}; // >> TODO <<
+}; // >> DONE <<
 
 exports.deactivateAcc = async (req, res) => {
   try {
