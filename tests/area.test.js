@@ -23,7 +23,7 @@ const mockTechId = mongoose.Types.ObjectId();
 
 const mockAreaData = {
   name: 'Mock Area',
-  description: 'This is a mock area for testing purposes.',
+  description: 'This is a mock area of interest for testing purposes. It contains sample data to evaluate various scenarios and functionalities.',
   imgURL: 'https://example.com/mock-area.jpg',
   keyFeatures: ['Feature 1', 'Feature 2'],
   useCases: ['Use Case 1', 'Use Case 2'],
@@ -33,12 +33,25 @@ const mockAreaData = {
 };
 
 describe('CREATE Area Model Test', () => {
-  const mockArea = new Area(mockAreaData);
+  const mockArea = new Area({
+    name: 'Mock Area',
+    description: 'This is a mock area of interest for testing purposes. It contains sample data to evaluate various scenarios and functionalities.',
+    imgURL: 'https://example.com/mock-area.jpg',
+    keyFeatures: ['Feature 1', 'Feature 2'],
+    useCases: ['Use Case 1', 'Use Case 2'],
+  });
 
-  it('Should save the mock area to the database.', () => {
+  it('Should save the mock area to the database with default values for non-required fields.', () => {
     return mockArea.save().then((savedArea) => {
       expect(savedArea.name).toBe('Mock Area');
-      expect(savedArea.description).toBe('This is a mock area for testing purposes.');
+      expect(savedArea.description).toBe('This is a mock area of interest for testing purposes. It contains sample data to evaluate various scenarios and functionalities.');
+      expect(savedArea.imgURL).toBe('https://example.com/mock-area.jpg');
+      expect(savedArea.keyFeatures).toEqual(['Feature 1', 'Feature 2']);
+      expect(savedArea.useCases).toEqual(['Feature 1', 'Feature 2']);
+      // Expect default values for non-required fields
+      expect(savedArea.popularity).toBe(0);
+      expect(savedArea.langs).toEqual([]);
+      expect(savedArea.techs).toEqual([]);
     });
   });
 });
@@ -49,7 +62,7 @@ describe('READ Area Model Test', () => {
   it('should test the schema and return the correct values', () => {
     const expectedData = {
       name: 'Mock Area',
-      description: 'This is a mock area for testing purposes.',
+      description: 'This is a mock area of interest for testing purposes. It contains sample data to evaluate various scenarios and functionalities.',
       imgURL: 'https://example.com/mock-area.jpg',
       keyFeatures: ['Feature 1', 'Feature 2'],
       useCases: ['Use Case 1', 'Use Case 2'],

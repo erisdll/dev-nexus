@@ -23,8 +23,8 @@ const mockAreaId = mongoose.Types.ObjectId();
 
 const mockTechData = {
   name: 'Mock Tech',
-  description: 'This is a mock tech for testing purposes.',
-  imgUrl: 'https://example.com/mock-tech.jpg',
+  description: 'This is a mock technology for testing purposes. It contains sample data to evaluate various scenarios and functionalities.',
+  imgURL: 'https://example.com/mock-tech.jpg',
   keyFeatures: ['Feature 1', 'Feature 2'],
   advantages: ['Advantage 1', 'Advantage 2'],
   disadvantages: ['Disadvantage 1', 'Disadvantage 2'],
@@ -34,12 +34,26 @@ const mockTechData = {
 };
 
 describe('CREATE Tech Model Test', () => {
-  const mockTech = new Tech(mockTechData);
+  const mockTech = new Tech({
+    name: 'Mock Tech',
+    description: 'This is a mock technology for testing purposes. It contains sample data to evaluate various scenarios and functionalities.',
+    imgURL: 'https://example.com/mock-tech.jpg',
+    keyFeatures: ['Feature 1', 'Feature 2'],
+    advantages: ['Advantage 1', 'Advantage 2'],
+    disadvantages: ['Disadvantage 1', 'Disadvantage 2'],
+  });
 
   it('Should save the mock tech to the database.', () => {
     return mockTech.save().then((savedTech) => {
       expect(savedTech.name).toBe('Mock Tech');
-      expect(savedTech.description).toBe('This is a mock tech for testing purposes.');
+      expect(savedTech.description).toBe('This is a mock technology for testing purposes. It contains sample data to evaluate various scenarios and functionalities.');
+      expect(savedTech.imgURL).toBe('https://example.com/mock-tech.jpg');
+      expect(savedTech.keyFeatures).toEqual(['Feature 1', 'Feature 2']);
+      expect(savedTech.advantages).toEqual(['Advantage 1', 'Advantage 2']);
+      expect(savedTech.disadvantages).toEqual(['Disadvantage 1', 'Disadvantage 2']);
+      expect(savedTech.popularity).toBe(0);
+      expect(savedTech.langs).toEqual([]);
+      expect(savedTech.areas).toEqual([]);
     });
   });
 });
@@ -50,8 +64,8 @@ describe('READ Tech Model Test', () => {
   it('should test the schema and return the correct values', () => {
     const expectedData = {
       name: 'Mock Tech',
-      description: 'This is a mock tech for testing purposes.',
-      imgUrl: 'https://example.com/mock-tech.jpg',
+      description: 'This is a mock technology for testing purposes. It contains sample data to evaluate various scenarios and functionalities.',
+      imgURL: 'https://example.com/mock-tech.jpg',
       keyFeatures: ['Feature 1', 'Feature 2'],
       advantages: ['Advantage 1', 'Advantage 2'],
       disadvantages: ['Disadvantage 1', 'Disadvantage 2'],

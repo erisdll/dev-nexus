@@ -21,8 +21,8 @@ afterAll(async () => {
 const mockLangId = mongoose.Types.ObjectId();
 const mockTechId = mongoose.Types.ObjectId();
 const mockAreaId = mongoose.Types.ObjectId();
-const createdAtMock = Date.now()
-const lastLoginMock = Date.now()
+const MockcreatedAt = Date.now()
+const MocklastLogin = Date.now()
 
 const mockUserData = {
   username: 'mockuser',
@@ -36,18 +36,34 @@ const mockUserData = {
   selectedTechs: [mockTechId],
   selectedAreas: [mockAreaId],
   isAdmin: false,
-  createdAt: createdAtMock,
-  lastLogin: lastLoginMock,
+  createdAt: MockcreatedAt,
+  lastLogin: MocklastLogin,
   deactivated: false,
 };
 
 describe('CREATE User Model Test', () => {
-  const mockUser = new User(mockUserData);
+  const mockUser = new User({
+    username: 'mockuser',
+    password: 'mockpassword',
+    email: 'mockuser@example.com',
+  });
 
-  it('Should save the mock user to the database.', () => {
-    return mockUser.save().then((mockData) => {
-      expect(mockData.username).toBe('mockuser');
-      expect(mockData.email).toBe('mockuser@example.com');
+  it('Should save the mock user to the database with default values for non-required fields.', () => {
+    return mockUser.save().then((savedUser) => {
+      expect(savedUser.username).toBe('mockuser');
+      expect(savedUser.email).toBe('mockuser@example.com');
+      // Expect default values for non-required fields
+      expect(savedUser.fullName).toBeUndefined();
+      expect(savedUser.location).toBeUndefined();
+      expect(savedUser.imgURL).toBeUndefined();
+      expect(savedUser.bio).toBe("Hi, I'm a DevNexus user! I love coding and learning new technologies. :)");
+      expect(savedUser.selectedLangs).toEqual([]);
+      expect(savedUser.selectedTechs).toEqual([]);
+      expect(savedUser.selectedAreas).toEqual([]);
+      expect(savedUser.isAdmin).toBeFalsy();
+      expect(savedUser.createdAt).toBeInstanceOf(Date);
+      expect(savedUser.lastLogin).toBeUndefined();
+      expect(savedUser.deactivated).toBeFalsy();
     });
   });
 });
@@ -68,8 +84,8 @@ describe('READ User Model Test', () => {
       selectedTechs: [mockTechId],
       selectedAreas: [mockAreaId],
       isAdmin: false,
-      createdAt: createdAtMock,
-      lastLogin: lastLoginMock,
+      createdAt: MockcreatedAt,
+      lastLogin: MocklastLogin,
       deactivated: false,
     };
 
@@ -99,9 +115,9 @@ describe('DELETE User Model Test', () => {
   const mockUser = new User(mockUserData);
 
   it('Should delete a mockUser document from the DB', () => {
-    return mockUser.save().then((savedData) => {
-      return User.deleteOne({ _id: savedData._id }).then(() => {
-        return User.findOne({ _id: savedData._id }).then((foundData) => {
+    return mockUser.save().then((savedUser) => {
+      return User.deleteOne({ _id: savedUser._id }).then(() => {
+        return User.findOne({ _id: savedUser._id }).then((foundData) => {
           expect(foundData).toBe(null);
         });
       });

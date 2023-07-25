@@ -23,25 +23,44 @@ const mockTechId = mongoose.Types.ObjectId();
 
 const mockLangData = {
   name: 'Mock Language',
-  description: 'This is a mock language for testing purposes.',
+  description: 'This is a mock programming language for testing purposes. It contains sample data to evaluate various scenarios and functionalities.',
   imgURL: 'https://example.com/mock-language.jpg',
   keyFeatures: ['Feature 1', 'Feature 2'],
   advantages: ['Advantage 1', 'Advantage 2'],
   disadvantages: ['Disadvantage 1', 'Disadvantage 2'],
-  designedBy: ['Designer 1', 'Designer 2'],
+  designedBy: ['Developer 1', 'Developer 2'],
   yearCreated: 2020,
   popularity: 75,
   areas: [mockAreaId],
-  techs: [mockTechId],
+  areas: [mockTechId],
 };
 
 describe('CREATE Lang Model Test', () => {
-  const mockLang = new Lang(mockLangData);
+  const mockLang = new Lang({
+    name: 'Mock Language',
+    description: 'This is a mock programming language for testing purposes. It contains sample data to evaluate various scenarios and functionalities.',
+    imgURL: 'https://example.com/mock-language.jpg',
+    keyFeatures: ['Feature 1', 'Feature 2'],
+    advantages: ['Advantage 1', 'Advantage 2'],
+    disadvantages: ['Disadvantage 1', 'Disadvantage 2'],
+    designedBy: ['Developer 1', 'Developer 2'],
+    yearCreated: 2020,
+  });
 
   it('Should save the mock language to the database.', () => {
     return mockLang.save().then((savedLang) => {
       expect(savedLang.name).toBe('Mock Language');
-      expect(savedLang.description).toBe('This is a mock language for testing purposes.');
+      expect(savedLang.description).toBe('This is a mock programming language for testing purposes. It contains sample data to evaluate various scenarios and functionalities.');
+      expect(savedLang.imgURL).tobe('https://example.com/mock-language.jpg')
+      expect(savedLang.keyFeatures).toEqual(['Feature 1', 'Feature 2'])
+      expect(savedLang.advantages).toEqual(['Advantage 1', 'Advantage 2'])
+      expect(savedLang.disadvantages).toEqual(['Disadvantage 1', 'Disadvantage 2'])
+      expect(savedLang.designedBy).toEqual(['Developer 1', 'Developer 2'])
+      expect(savedLang.yearCreated).tobe(2020)
+      // Expect default values for non-required fields
+      expect(savedLang.popularity).toBe(0);
+      expect(savedLang.areas).toEqual([]);
+      expect(savedLang.langs).toEqual([]);
     });
   });
 });
@@ -52,12 +71,12 @@ describe('READ Lang Model Test', () => {
   it('should test the schema and return the correct values', () => {
     const expectedData = {
       name: 'Mock Language',
-      description: 'This is a mock language for testing purposes.',
+      description: 'This is a mock programming language for testing purposes. It contains sample data to evaluate various scenarios and functionalities.',
       imgURL: 'https://example.com/mock-language.jpg',
       keyFeatures: ['Feature 1', 'Feature 2'],
       advantages: ['Advantage 1', 'Advantage 2'],
       disadvantages: ['Disadvantage 1', 'Disadvantage 2'],
-      designedBy: ['Designer 1', 'Designer 2'],
+      designedBy: ['Developer 1', 'Developer 2'],
       yearCreated: 2020,
       popularity: 75,
       areas: [mockAreaId],

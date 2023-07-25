@@ -14,7 +14,7 @@ const techSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  imgUrl: {
+  imgURL: {
     type: String,
     required: true,
   },
