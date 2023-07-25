@@ -11,7 +11,7 @@ router.delete('/:username', authenticateUser, isAdmin, userController.deleteUser
 
 // Common Routes
 // These routes are accessible to any user
-router.get('/users', userController.getAllUsers);
+router.get('/all', userController.getAllUsers);
 router.get('/:username', userController.getUser);
 
 // Profile & Settings Routes

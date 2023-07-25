@@ -1,5 +1,5 @@
 const Lang = require('../models/Lang');
-const { capitalizeName } = require('../utils/capitalizeTitle')
+const { capitalizeName } = require('../utils/capitalizer');
 
 exports.createLang = async (req, res) => {
   try {

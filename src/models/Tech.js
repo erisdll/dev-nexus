@@ -40,6 +40,7 @@ const techSchema = new mongoose.Schema({
   popularity: {
     type: Number,
     default: 0,
+    max: 100,
   },
 
   // Selections

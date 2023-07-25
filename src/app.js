@@ -24,7 +24,7 @@ app.use('/', authRouter);
 app.use('/areas-of-interest', areaRouter);
 app.use('/programming-languages', langRouter);
 app.use('/technologies', techRouter);
-app.use('/user', userRouter);
+app.use('/users', userRouter);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 module.exports = app;

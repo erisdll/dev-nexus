@@ -50,8 +50,8 @@ exports.createUser = async (req, res) => {
 
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({ password: 0 });
-
+    const users = await User.find();
+    console.log(users)
     if (users.length === 0) {
       throw new Error('Not Found');
     }

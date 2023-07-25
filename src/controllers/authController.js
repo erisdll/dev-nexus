@@ -18,10 +18,11 @@ exports.signup = async (req, res) => {
       email,
       password: hashPass,
     });
-    await newUser.save();
+    const savedUser = await newUser.save();
     return res.status(201).json({
       status: 'success',
       message: 'Account created succesfully!',
+      data: { savedUser },
     });
   } catch (err) {
     if (err.message === 'Passwords do not match') {
@@ -33,6 +34,7 @@ exports.signup = async (req, res) => {
       return res.status(500).json({
         status: 'fail',
         message: 'Internal server error!',
+        error: err.message
       });
     }
   }

@@ -1,5 +1,5 @@
 const Tech = require('../models/Tech');
-const { capitalizeName } = require('../utils/capitalizeTitle')
+const { capitalizeName } = require('../utils/capitalizer')
 
 exports.createTech = async (req, res) => {
   try {

@@ -1,5 +1,5 @@
 const Area = require('../models/Area');
-const { capitalizeName } = require('../utils/capitalizeTitle')
+const { capitalizeName } = require('../utils/capitalizer');
 
 exports.createArea = async (req, res) => {
   try {
