@@ -52,7 +52,7 @@ const langSchema = new mongoose.Schema({
         message: 'There should be at least 5 key features.',
       },
     ],
-    maxlength: 50,
+    maxlength: 32,
     required: true,
   },
   advantages: {
