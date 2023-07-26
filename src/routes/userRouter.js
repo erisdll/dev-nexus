@@ -5,7 +5,7 @@ const { authenticateUser, isAdmin } = require('../utils/authenticator');
 
 // User Management Routes
 // These are only accessible to admins
-router.post('/create', authenticateUser, isAdmin, userController.createUser);
+router.post('/add', authenticateUser, isAdmin, userController.createUser);
 router.patch('/:username', authenticateUser, isAdmin, userController.updateUser);
 router.delete('/:username', authenticateUser, isAdmin, userController.deleteUser);
 

@@ -86,7 +86,7 @@
         }
       }
     },
-    "/user/change-password": {
+    "/settings/change-password": {
       "patch": {
         "description": "",
         "parameters": [
@@ -599,7 +599,7 @@
         }
       }
     },
-    "/user/create": {
+    "/users/add": {
       "post": {
         "description": "",
         "parameters": [
@@ -662,7 +662,7 @@
         }
       }
     },
-    "/user/{username}": {
+    "/users/{username}": {
       "patch": {
         "description": "",
         "parameters": [
@@ -742,7 +742,7 @@
         }
       }
     },
-    "/user/users": {
+    "/users/all": {
       "get": {
         "description": "",
         "responses": {
@@ -758,9 +758,16 @@
         }
       }
     },
-    "/user/selections": {
+    "/users/selections": {
       "get": {
         "description": "",
+        "parameters": [
+          {
+            "name": "selections",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -780,18 +787,17 @@
         "description": "",
         "parameters": [
           {
+            "name": "selectionType",
+            "in": "query",
+            "type": "string"
+          },
+          {
             "name": "body",
             "in": "body",
             "schema": {
               "type": "object",
               "properties": {
-                "selectedLangs": {
-                  "example": "any"
-                },
-                "selectedAreas": {
-                  "example": "any"
-                },
-                "selectedTechs": {
+                "selections": {
                   "example": "any"
                 }
               }
@@ -801,6 +807,9 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
           },
           "401": {
             "description": "Unauthorized"
@@ -814,7 +823,7 @@
         }
       }
     },
-    "/user/profile": {
+    "/users/profile": {
       "get": {
         "description": "",
         "responses": {
@@ -850,7 +859,7 @@
         }
       }
     },
-    "/user/deactivate": {
+    "/users/deactivate": {
       "patch": {
         "description": "",
         "parameters": [

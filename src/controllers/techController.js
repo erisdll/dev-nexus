@@ -50,7 +50,7 @@ exports.getAllTechs = async (req, res) => {
       throw new Error('Not Found');
     }
 
-    const techsList = langs.map(tech => ({
+    const techsList = techs.map(tech => ({
       name: tech.name,
       description: tech.description,
       imgURL: tech.imgURL
@@ -109,7 +109,7 @@ exports.updateTech = async (req, res) => {
   try {
     const techName = capitalizeName(req.params.name);
     const updatedtech = await Tech.findOneAndUpdate(
-      { techName },
+      { name: techName },
       { $set: req.body },
       { new: true },
     );
@@ -146,7 +146,7 @@ exports.updateTech = async (req, res) => {
 exports.deleteTech = async (req, res) => {
   try {
     const techName = capitalizeName(req.params.name);
-    const deletedtech = await Tech.findOneAndDelete({ techName });
+    const deletedtech = await Tech.findOneAndDelete({ name: techName });
 
     if (!deletedtech) {
       throw new Error('Not Found');

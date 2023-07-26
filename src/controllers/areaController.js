@@ -107,7 +107,7 @@ exports.updateArea = async (req, res) => {
   try {
     const areaName = capitalizeName(req.params.name);
     const updatedArea = await Area.findOneAndUpdate(
-      { areaName },
+      { name: areaName },
       { $set: req.body },
       { new: true },
     );
@@ -144,7 +144,7 @@ exports.updateArea = async (req, res) => {
 exports.deleteArea = async (req, res) => {
   try {
     const areaName = capitalizeName(req.params.name);
-    const deletedArea = await Area.findOneAndDelete({ areaName });
+    const deletedArea = await Area.findOneAndDelete({ name: areaName });
 
     if (!deletedArea) {
       throw new Error('Not Found');

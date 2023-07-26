@@ -5,27 +5,33 @@ const Tech = require('../src/models/Tech');
 let mongoServer;
 
 beforeAll(async () => {
-  mongoServer = new MongoMemoryServer();
-  const mongoUri = await mongoServer.getUri();
+  mongoServer = await MongoMemoryServer.create();
+  const mongoUri = mongoServer.getUri();
   await mongoose.connect(mongoUri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+    dbName: 'testDB',
   });
 });
 
 afterAll(async () => {
-  await mongoose.disconnect();
   await mongoServer.stop();
+  await mongoose.disconnect();
 });
 
-const mockLangId = mongoose.Types.ObjectId();
-const mockAreaId = mongoose.Types.ObjectId();
+const mockLangId = new mongoose.Types.ObjectId();
+const mockAreaId = new mongoose.Types.ObjectId();
 
 const mockTechData = {
   name: 'Mock Tech',
-  description: 'This is a mock technology for testing purposes. It contains sample data to evaluate various scenarios and functionalities.',
+  description:
+    'This is a mock technology for testing purposes. It contains sample data to evaluate various scenarios and functionalities.',
   imgURL: 'https://example.com/mock-tech.jpg',
-  keyFeatures: ['Feature 1', 'Feature 2'],
+  keyFeatures: [
+    'Feature_1',
+    'Feature_2',
+    'Feature_3',
+    'Feature_4',
+    'Feature_5',
+  ],
   advantages: ['Advantage 1', 'Advantage 2'],
   disadvantages: ['Disadvantage 1', 'Disadvantage 2'],
   popularity: 50,
@@ -36,9 +42,16 @@ const mockTechData = {
 describe('CREATE Tech Model Test', () => {
   const mockTech = new Tech({
     name: 'Mock Tech',
-    description: 'This is a mock technology for testing purposes. It contains sample data to evaluate various scenarios and functionalities.',
+    description:
+      'This is a mock technology for testing purposes. It contains sample data to evaluate various scenarios and functionalities.',
     imgURL: 'https://example.com/mock-tech.jpg',
-    keyFeatures: ['Feature 1', 'Feature 2'],
+    keyFeatures: [
+      'Feature_1',
+      'Feature_2',
+      'Feature_3',
+      'Feature_4',
+      'Feature_5',
+    ],
     advantages: ['Advantage 1', 'Advantage 2'],
     disadvantages: ['Disadvantage 1', 'Disadvantage 2'],
   });
@@ -48,7 +61,13 @@ describe('CREATE Tech Model Test', () => {
       expect(savedTech.name).toBe('Mock Tech');
       expect(savedTech.description).toBe('This is a mock technology for testing purposes. It contains sample data to evaluate various scenarios and functionalities.');
       expect(savedTech.imgURL).toBe('https://example.com/mock-tech.jpg');
-      expect(savedTech.keyFeatures).toEqual(['Feature 1', 'Feature 2']);
+      expect(savedTech.keyFeatures).toEqual([
+        'Feature_1',
+        'Feature_2',
+        'Feature_3',
+        'Feature_4',
+        'Feature_5',
+      ]);
       expect(savedTech.advantages).toEqual(['Advantage 1', 'Advantage 2']);
       expect(savedTech.disadvantages).toEqual(['Disadvantage 1', 'Disadvantage 2']);
       expect(savedTech.popularity).toBe(0);
@@ -64,9 +83,16 @@ describe('READ Tech Model Test', () => {
   it('should test the schema and return the correct values', () => {
     const expectedData = {
       name: 'Mock Tech',
-      description: 'This is a mock technology for testing purposes. It contains sample data to evaluate various scenarios and functionalities.',
+      description:
+        'This is a mock technology for testing purposes. It contains sample data to evaluate various scenarios and functionalities.',
       imgURL: 'https://example.com/mock-tech.jpg',
-      keyFeatures: ['Feature 1', 'Feature 2'],
+      keyFeatures: [
+        'Feature_1',
+        'Feature_2',
+        'Feature_3',
+        'Feature_4',
+        'Feature_5',
+      ],
       advantages: ['Advantage 1', 'Advantage 2'],
       disadvantages: ['Disadvantage 1', 'Disadvantage 2'],
       popularity: 50,
@@ -97,14 +123,21 @@ describe('UPDATE Tech Model Test', () => {
 });
 
 describe('DELETE Tech Model Test', () => {
-  const mockTech = new Tech(mockTechData);
+  let mockTech;
+
+  beforeEach(async () => {
+    // Clean up the Tech collection before each test
+    await Tech.deleteMany({});
+
+    // Create and save the mockTech
+    mockTech = new Tech(mockTechData);
+    await mockTech.save();
+  });
 
   it('Should delete a mockTech document from the DB', () => {
-    return mockTech.save().then((savedTech) => {
-      return Tech.deleteOne({ _id: savedTech._id }).then(() => {
-        return Tech.findOne({ _id: savedTech._id }).then((foundTech) => {
-          expect(foundTech).toBe(null);
-        });
+    return Tech.deleteOne({ _id: mockTech._id }).then(() => {
+      return Tech.findOne({ _id: mockTech._id }).then(foundTech => {
+        expect(foundTech).toBe(null);
       });
     });
   });

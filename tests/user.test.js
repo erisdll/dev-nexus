@@ -5,28 +5,25 @@ const User = require('../src/models/User');
 let mongoServer;
 
 beforeAll(async () => {
-  mongoServer = new MongoMemoryServer();
-  const mongoUri = await mongoServer.getUri();
+  mongoServer = await MongoMemoryServer.create();
+  const mongoUri = mongoServer.getUri();
   await mongoose.connect(mongoUri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+    dbName: 'testDB',
   });
 });
 
 afterAll(async () => {
-  await mongoose.disconnect();
   await mongoServer.stop();
+  await mongoose.disconnect();
 });
 
-const mockLangId = mongoose.Types.ObjectId();
-const mockTechId = mongoose.Types.ObjectId();
-const mockAreaId = mongoose.Types.ObjectId();
-const MockcreatedAt = Date.now()
-const MocklastLogin = Date.now()
+const mockLangId = new mongoose.Types.ObjectId();
+const mockTechId = new mongoose.Types.ObjectId();
+const mockAreaId = new mongoose.Types.ObjectId();
 
 const mockUserData = {
   username: 'mockuser',
-  password: 'mockpassword',
+  password: 'M0ckp@ssword',
   email: 'mockuser@example.com',
   fullName: 'Mock User',
   location: 'Mock City',
@@ -36,15 +33,15 @@ const mockUserData = {
   selectedTechs: [mockTechId],
   selectedAreas: [mockAreaId],
   isAdmin: false,
-  createdAt: MockcreatedAt,
-  lastLogin: MocklastLogin,
+  createdAt: '2023-07-25T23:26:37.616Z',
+  lastLogin: '2023-07-25T23:26:37.616Z',
   deactivated: false,
 };
 
 describe('CREATE User Model Test', () => {
   const mockUser = new User({
     username: 'mockuser',
-    password: 'mockpassword',
+    password: 'M0ckp@ssword',
     email: 'mockuser@example.com',
   });
 
@@ -74,7 +71,7 @@ describe('READ User Model Test', () => {
   it('should test the schema and return the correct values', () => {
     const expectedData = {
       username: 'mockuser',
-      password: 'mockpassword',
+      password: 'M0ckp@ssword',
       email: 'mockuser@example.com',
       fullName: 'Mock User',
       location: 'Mock City',
@@ -84,8 +81,8 @@ describe('READ User Model Test', () => {
       selectedTechs: [mockTechId],
       selectedAreas: [mockAreaId],
       isAdmin: false,
-      createdAt: MockcreatedAt,
-      lastLogin: MocklastLogin,
+      createdAt: new Date('2023-07-25T23:26:37.616Z'),
+      lastLogin: new Date('2023-07-25T23:26:37.616Z'),
       deactivated: false,
     };
 
@@ -98,7 +95,16 @@ describe('READ User Model Test', () => {
 });
 
 describe('UPDATE User Model Test', () => {
-  const mockUser = new User(mockUserData);
+  let mockUser = new User(mockUserData);
+
+  beforeEach(async () => {
+    // Clean up the User collection before each test
+    await User.deleteMany({});
+
+    // Create and save the mockUser
+    mockUser = new User(mockUserData);
+    await mockUser.save();
+  });
 
   it('Should edit the document and save the updated version to the DB', () => {
     mockUser.username = 'updatedmockuser';
@@ -112,14 +118,21 @@ describe('UPDATE User Model Test', () => {
 });
 
 describe('DELETE User Model Test', () => {
-  const mockUser = new User(mockUserData);
+  let mockUser;
+
+  beforeEach(async () => {
+    // Clean up the User collection before each test
+    await User.deleteMany({});
+
+    // Create and save the mockUser
+    mockUser = new User(mockUserData);
+    await mockUser.save();
+  });
 
   it('Should delete a mockUser document from the DB', () => {
-    return mockUser.save().then((savedUser) => {
-      return User.deleteOne({ _id: savedUser._id }).then(() => {
-        return User.findOne({ _id: savedUser._id }).then((foundData) => {
-          expect(foundData).toBe(null);
-        });
+    return User.deleteOne({ _id: mockUser._id }).then(() => {
+      return User.findOne({ _id: mockUser._id }).then(foundUser => {
+        expect(foundUser).toBe(null);
       });
     });
   });

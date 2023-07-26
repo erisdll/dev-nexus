@@ -6,6 +6,18 @@ const langSchema = new mongoose.Schema({
     type: String,
     unique: true,
     required: true,
+    validate: {
+      validator: function isCapitalized(name) {
+        const words = name.trim().split(/\s+/);
+        for (const word of words) {
+          if (!word[0].match(/^[A-Z]/)) {
+            return false;
+          }
+        }
+        return true;
+      },
+      message: 'Name must have the first letter capitalized.',
+    },
   },
   description: {
     type: String,
@@ -21,18 +33,58 @@ const langSchema = new mongoose.Schema({
 
   // Array fields
   keyFeatures: {
-    type: [String],
+    type: [
+      {
+        type: String,
+        validate: {
+          validator: function (value) {
+            return !/\s/.test(value);
+          },
+          message: 'Cannot contain spaces!',
+        },
+      },
+    ],
+    validate: [
+      {
+        validator: function (value) {
+          return value.length >= 5;
+        },
+        message: 'There should be at least 5 key features.',
+      },
+    ],
     maxlength: 50,
     required: true,
   },
   advantages: {
-    type: [String],
-    maxlength: 100,
+    type: [
+      {
+        type: String,
+        maxlength: 100,
+        trim: true,
+      },
+    ],
+    validate: {
+      validator: function (value) {
+        return value.length >= 5;
+      },
+      message: 'There should be at least 5 advantages.',
+    },
     required: true,
   },
   disadvantages: {
-    type: [String],
-    maxlength: 100,
+    type: [
+      {
+        type: String,
+        maxlength: 100,
+        trim: true,
+      },
+    ],
+    validate: {
+      validator: function (value) {
+        return value.length >= 5;
+      },
+      message: 'There should be at least 5 disadvantages.',
+    },
     required: true,
   },
   designedBy: {

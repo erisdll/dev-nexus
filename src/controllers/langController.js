@@ -41,7 +41,7 @@ exports.createLang = async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       status: 'fail',
-      message: 'Internal server error',
+      message: `Internal server error: ${err.message}`,
     });
   }
 };
@@ -113,7 +113,7 @@ exports.updateLang = async (req, res) => {
   try {
     const langName = capitalizeName(req.params.name);
     const updatedlang = await Lang.findOneAndUpdate(
-      { langName },
+      { name: langName },
       { $set: req.body },
       { new: true },
     );
@@ -150,7 +150,7 @@ exports.updateLang = async (req, res) => {
 exports.deleteLang = async (req, res) => {
   try {
     const langName = capitalizeName(req.params.name);
-    const deletedlang = await Lang.findOneAndDelete({ langName });
+    const deletedlang = await Lang.findOneAndDelete({ name: langName });
 
     if (!deletedlang) {
       throw new Error('Not Found');

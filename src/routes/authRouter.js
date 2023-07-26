@@ -5,6 +5,6 @@ const { authenticateUser } = require('../utils/authenticator');
 
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
-router.patch('/user/change-password', authenticateUser, authController.updatePassword);
+router.patch('/settings/change-password', authenticateUser, authController.updatePassword);
 
 module.exports = router;

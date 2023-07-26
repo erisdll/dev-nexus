@@ -21,8 +21,26 @@ const areaSchema = new mongoose.Schema({
 
   // Array fields
   keyFeatures: {
-    type: [String],
-    maxlength: 100,
+    type: [
+      {
+        type: String,
+        validate: {
+          validator: function (value) {
+            return !/\s/.test(value);
+          },
+          message: 'Cannot contain spaces!',
+        },
+      },
+    ],
+    validate: [
+      {
+        validator: function (value) {
+          return value.length >= 5;
+        },
+        message: 'There should be at least 5 key features.',
+      },
+    ],
+    maxlength: 50,
     required: true,
   },
   useCases: {
