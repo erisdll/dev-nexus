@@ -2,10 +2,10 @@
   "swagger": "2.0",
   "info": {
     "version": "1.0.0",
-    "title": "REST API",
+    "title": "devNexus",
     "description": ""
   },
-  "host": "localhost:3000",
+  "host": "devnexus-i46j.onrender.com",
   "basePath": "/",
   "schemes": [
     "http"
