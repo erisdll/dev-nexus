@@ -5,10 +5,25 @@
     "title": "devNexus",
     "description": "The devNexus API provides users around the world with a way to keep track of their favorite programming languages, areas of interest and technologies, as well as staying up to date with the communities favorite resources."
   },
-  "host": "devnexus-i46j.onrender.com",
+  "host": "localhost",
   "basePath": "/",
   "schemes": [
-    "https"
+    "https",
+    "http"
+  ],
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "Authorization",
+      "description": "Please enter a valid token to test the requests below..."
+    }
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
   ],
   "paths": {
     "/signup": {
@@ -128,6 +143,105 @@
         }
       }
     },
+    "/areas-of-interest/": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/areas-of-interest/{name}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "patch": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/areas-of-interest/add": {
       "post": {
         "description": "",
@@ -182,7 +296,7 @@
         }
       }
     },
-    "/areas-of-interest/": {
+    "/programming-languages/": {
       "get": {
         "description": "",
         "responses": {
@@ -198,7 +312,7 @@
         }
       }
     },
-    "/areas-of-interest/{name}": {
+    "/programming-languages/{name}": {
       "get": {
         "description": "",
         "parameters": [
@@ -344,7 +458,7 @@
         }
       }
     },
-    "/programming-languages/": {
+    "/technologies/": {
       "get": {
         "description": "",
         "responses": {
@@ -360,7 +474,7 @@
         }
       }
     },
-    "/programming-languages/{name}": {
+    "/technologies/{name}": {
       "get": {
         "description": "",
         "parameters": [
@@ -500,7 +614,7 @@
         }
       }
     },
-    "/technologies/": {
+    "/users/all": {
       "get": {
         "description": "",
         "responses": {
@@ -516,12 +630,12 @@
         }
       }
     },
-    "/technologies/{name}": {
+    "/users/{username}": {
       "get": {
         "description": "",
         "parameters": [
           {
-            "name": "name",
+            "name": "username",
             "in": "path",
             "required": true,
             "type": "string"
@@ -543,7 +657,7 @@
         "description": "",
         "parameters": [
           {
-            "name": "name",
+            "name": "username",
             "in": "path",
             "required": true,
             "type": "string"
@@ -552,9 +666,6 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
           },
           "401": {
             "description": "Unauthorized"
@@ -574,7 +685,7 @@
         "description": "",
         "parameters": [
           {
-            "name": "name",
+            "name": "username",
             "in": "path",
             "required": true,
             "type": "string"
@@ -662,108 +773,12 @@
         }
       }
     },
-    "/users/{username}": {
-      "patch": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "username",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "delete": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "username",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "username",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/users/all": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
     "/users/selections": {
       "get": {
         "description": "",
         "parameters": [
           {
-            "name": "selections",
+            "name": "items",
             "in": "query",
             "type": "string"
           }
@@ -787,7 +802,7 @@
         "description": "",
         "parameters": [
           {
-            "name": "selectionType",
+            "name": "items",
             "in": "query",
             "type": "string"
           },
