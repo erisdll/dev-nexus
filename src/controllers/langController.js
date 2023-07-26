@@ -41,7 +41,7 @@ exports.createLang = async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       status: 'fail',
-      message: `Internal server error: ${err.message}`,
+      message: 'Internal server error!',
     });
   }
 };
@@ -73,7 +73,7 @@ exports.getAllLangs = async (req, res) => {
     } else {
       return res.status(500).json({
         status: 'fail',
-        message: 'Internal server error',
+        message: 'Internal server error!',
       });
     }
   }
@@ -103,7 +103,7 @@ exports.getLang = async (req, res) => {
     } else {
       return res.status(500).json({
         status: 'fail',
-        message: 'Internal server error',
+        message: 'Internal server error!',
       });
     }
   }
@@ -141,7 +141,7 @@ exports.updateLang = async (req, res) => {
     } else {
       return res.status(500).json({
         status: 'fail',
-        message: 'Internal server error',
+        message: 'Internal server error!',
       });
     }
   }
@@ -169,8 +169,45 @@ exports.deleteLang = async (req, res) => {
     } else {
       return res.status(500).json({
         status: 'fail',
-        message: 'Internal server error',
+        message: 'Internal server error!',
       });
     }
+  }
+};
+
+// Other Operations
+
+exports.getLangsByFeatures = async (req, res) => {
+  try {
+    const { tags } = req.query;
+
+    if (!tags || typeof tags !== 'string') {
+      throw new Error('Invalid request! The "tags" parameter is empty.')
+    }
+
+    // This splits the 'tags' string into an array, replaces the '+' separator with '_'.
+    const featureArray = tags.split('+').map((tag) => tag.replace(/-/g, '_'));
+
+    // Uses the MongoDB '$in' operator to find docs that have at least one matching value
+    const matchingLangs = await Lang.find({
+      keyFeatures: { $in: featureArray },
+    })
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        languages: matchingLangs,
+      },
+    });
+  } catch (err) {
+    if (err.message === 'Invalid request! The "tags" parameter is empty.') {
+      return res.status(400).json({
+        status: 'fail',
+        message: err.message,
+      });
+    } else {res.status(500).json({
+      status: 'fail',
+      message: 'Internal server error!',
+    });}
   }
 };
