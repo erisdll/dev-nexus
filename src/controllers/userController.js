@@ -46,7 +46,7 @@ exports.createUser = async (req, res) => {
       message: 'Internal server error!',
     });
   }
-}; // DONE
+}
 
 exports.getAllUsers = async (req, res) => {
   try {
@@ -79,7 +79,7 @@ exports.getAllUsers = async (req, res) => {
       });
     }
   }
-}; // DONE
+}
 
 exports.getUser = async (req, res) => {
   try {
@@ -117,7 +117,7 @@ exports.getUser = async (req, res) => {
       });
     }
   }
-}; // DONE
+}
 
 exports.updateUser = async (req, res) => {
   try {
@@ -152,7 +152,7 @@ exports.updateUser = async (req, res) => {
       });
     }
   }
-}; // DONE
+}
 
 exports.deleteUser = async (req, res) => {
   try {
@@ -181,11 +181,11 @@ exports.deleteUser = async (req, res) => {
       });
     }
   }
-}; // DONE
+}
 
-// Profile & Settings
-// These routes exclusively allow access to an authenticated user's private
-// data and enable them to manage >only their own< profile and settings.
+// Profile
+// The following controller functions are related to the user's profile data.
+// They are designed to allow the user to update >only their own< profile.
 
 exports.getUserProfile = async (req, res) => {
   try {
@@ -222,7 +222,7 @@ exports.getUserProfile = async (req, res) => {
       });
     }
   }
-}; // DONE
+}
 
 exports.updateUserProfile = async (req, res) => {
   try {
@@ -266,52 +266,51 @@ exports.updateUserProfile = async (req, res) => {
       });
     }
   }
-}; // DONE
+}
 
 
 exports.getUserSelections = async (req, res) => { 
   try {
     const { username } = req.params;
-    const selections = req.query.selections || '';
-    const validFields = selections.split('+').filter((field) => field.trim());
-    const selectionOptions = {}
+    const items = req.query.items || '';
+    const validItems = items.split('+');
+    const itemOptions = {}
 
-    if (validFields.includes('languages')) {
-      selectionOptions.selectedLangs = 1;
+    if (
+      validItems.includes('langs') ||
+      validItems.includes('languages') ||
+      validItems.includes('programming-languages')
+    ) {
+      itemOptions.selectedLangs = 1;
     }
-    if (validFields.includes('areas-of-interest')) {
-      selectionOptions.selectedAreas = 1;
+    if (
+      validItems.includes('areas') ||
+      validItems.includes('areas-of-interest')
+    ) {
+      itemOptions.selectedAreas = 1;
     }
-    if (validFields.includes('technologies')) {
-      selectionOptions.selectedTechs = 1;
+    if (
+      validItems.includes('techs') ||
+      validItems.includes('technologies')
+      ) {
+      itemOptions.selectedTechs = 1;
     }
 
-    const user = await User.findOne(
+    const selections = await User.findOne(
       { username: { $regex: new RegExp(`^${username}$`, 'i') } },
-      selectionOptions
+      itemOptions
     )
     .lean();
 
-    if (!user) {
+    if (!selections) {
       throw new Error('Not Found');
-    }
-
-    const userSelections = {};
-    if (validFields.includes('languages')) {
-      userSelections.selectedLangs = user.selectedLangs;
-    }
-    if (validFields.includes('areas-of-interest')) {
-      userSelections.selectedAreas = user.selectedAreas;
-    }
-    if (validFields.includes('technologies')) {
-      userSelections.selectedTechs = user.selectedTechs;
     }
 
     res.status(200).json({
       status: 'success',
       data: {
         username,
-        selections: userSelections
+        selections: selections
       },
     });
   } catch (err) {
@@ -328,22 +327,21 @@ exports.getUserSelections = async (req, res) => {
     }
   }
 }
- // DONE
 
 exports.updateUserSelections = async (req, res) => {
   try {
     const { username } = req.params;
-    const { selectionType } = req.query;
+    const { items } = req.query;
     const { selections } = req.body;
 
-    if (!['languages', 'areas-of-interest', 'technologies'].includes(selectionType)) {
+    if (!['programming-languages', 'areas-of-interest', 'technologies'].includes(selectionType)) {
       return res.status(400).json({
         status: 'fail',
         message: 'Bad request! Invalid query.',
       });
     }
 
-    const updateQuery = { [selectionType]: selections };
+    const updateQuery = { [items]: selections };
 
     const user = await User.findOneAndUpdate(
       { username: { $regex: new RegExp(`^${username}$`, 'i') } },
@@ -357,9 +355,9 @@ exports.updateUserSelections = async (req, res) => {
 
     res.status(200).json({
       status: 'success',
-      message: `User ${selectionType} selection updated successfully!`,
+      message: `User ${items} selection updated successfully!`,
       data: {
-        [selectionType]: user[selectionType],
+        [items]: user[items],
       },
     });
   } catch (err) {
@@ -375,7 +373,7 @@ exports.updateUserSelections = async (req, res) => {
       });
     }
   }
-}; // >> DONE <<
+}; 
 
 exports.deactivateAcc = async (req, res) => {
   try {
@@ -419,4 +417,4 @@ exports.deactivateAcc = async (req, res) => {
       });
     }
   }
-}; // DONE
+};
