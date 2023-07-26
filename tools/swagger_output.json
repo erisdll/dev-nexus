@@ -5,7 +5,7 @@
     "title": "devNexus",
     "description": "The devNexus API provides users around the world with a way to keep track of their favorite programming languages, areas of interest and technologies, as well as staying up to date with the communities favorite resources."
   },
-  "host": "localhost",
+  "host": "https://devnexus-i46j.onrender.com",
   "basePath": "/",
   "schemes": [
     "https",
@@ -76,13 +76,13 @@
               "type": "object",
               "properties": {
                 "username": {
-                  "example": "any"
+                  "example": "cyberis"
                 },
                 "email": {
                   "example": "any"
                 },
                 "password": {
-                  "example": "any"
+                  "example": "N0t_using_my_password"
                 }
               }
             }

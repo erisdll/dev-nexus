@@ -4,11 +4,11 @@
   "description": "readme",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon .src/server/server.js",
-    "dev": "node .src/server/server.js",
+    "dev:once": "node .src/server/server.js",
     "dev:nodemon": "nodemon ./src/server/server.js",
     "dev:swagger": "node ./tools/swagger.js",
-    "dev:jest": "jest --watchAll"
+    "dev:jest": "jest --watchAll",
+    "production": "node ./src/server/server.js"
   },
   "repository": {
     "type": "git",
