@@ -8,7 +8,6 @@
   "host": "devnexus-i46j.onrender.com",
   "basePath": "/",
   "schemes": [
-    "http",
     "https"
   ],
   "paths": {
