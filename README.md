@@ -1,6 +1,6 @@
 # DevNexus
 
-DevNexus is a cutting-edge application that provides users around the world with a seamless way to keep track of their favorite programming languages, areas of interest, and technologies. With it, users can easily stay up-to-date with the latest resources from their favorite developer communities.
+DevNexus is an API that provides users around the world with a seamless way to keep track of their favorite programming languages, areas of interest, and technologies. With it, users can easily stay up-to-date with the latest resources from their favorite developer communities.
 
 ## Table of Contents
 - [Installation](#installation)
