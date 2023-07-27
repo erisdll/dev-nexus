@@ -5,8 +5,9 @@ DevNexus is a cutting-edge application that provides users around the world with
 ## Table of Contents
 - [Installation](#installation)
 - [Usage](#usage)
-- [API Routes and Endpoints](#api-routes-and-endpoints)
 - [Technologies Used](#technologies-used)
+- [Project Structure](#folder-structure)
+- [API Routes and Endpoints](#api-routes-and-endpoints)
 - [Contributing](#contributing)
 - [Acknowledgments](#acknowledgments)
 - [Contact](#contact)
@@ -67,7 +68,7 @@ DevNexus is a cutting-edge application that provides users around the world with
 | dotenv-safe  | swagger-autogen        |
 | pug          |                        
 
-## Project Folder Structure
+## Project Structure
 
 The project follows the MVC architecture and boasts a highly modular folder structure. It uses separate directories for controllers, models, and routes, ensuring clean separation of concerns and layers. There is a separete tests folder for jest unitary tests, an utils folder for utilities and middleware functions like auth middleware and error handling and a tools folder for additional purposes such as serving documentation. This approach was used to ensure and enhances code readability, maintainability, and scalability.
 
