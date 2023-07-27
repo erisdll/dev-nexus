@@ -7,7 +7,7 @@ const securityDefinitions = {
     type: 'apiKey',
     in: 'header',
     name: 'Authorization',
-    description: 'Please enter a valid token to test the requests below...',
+    description: "Please enter a valid token to test the requests below.\nDon't forget to add the 'Bearer' prefix!\n\nExample: 'Bearer dspj349gdkj548dfh23sd'"
   },
 };
 
