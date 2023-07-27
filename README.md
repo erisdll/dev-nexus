@@ -121,10 +121,11 @@ List and describe the available API routes and endpoints here.
 ## Contributing
 Contributions are welcome! Follow these steps to contribute:
 
-Fork the project
-Create a new branch
-Make your changes
-Submit a pull request
+1. Fork the project
+2. Create a new branch
+3. Make your changes
+4. Submit a pull request
+
 Please make sure to follow the code style and guidelines.
 
 ## Acknowledgments
@@ -134,5 +135,5 @@ I'd also like to thank [Jonas Schmedtmann](https://github.com/jonasschmedtmann) 
 ## Contact
 If you have any questions or feedback, feel free to contact me:
 
-Email: erika.melloramos@gmail.com
-GitHub: [nerlyerika](https://github.com/nearlyerika/)
+* Email: erika.melloramos@gmail.com
+* GitHub: [nerlyerika](https://github.com/nearlyerika/)
