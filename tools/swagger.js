@@ -1,6 +1,15 @@
 const swaggerAutogen = require('swagger-autogen')();
-const outputFile = './swagger_output.json'
-const endpointsFiles = ['../src/app.js']
+const outputFile = './swagger_output.json';
+const endpointsFiles = ['../src/app.js'];
+
+const securityDefinitions = {
+  Bearer: {
+    type: 'apiKey',
+    in: 'header',
+    name: 'Authorization',
+    description: 'Please enter a valid token to test the requests below...',
+  },
+};
 
 const config = {
   info: {
@@ -9,19 +18,11 @@ const config = {
     description:
       'The devNexus API provides users around the world with a way to keep track of their favorite programming languages, areas of interest and technologies, as well as staying up to date with the communities favorite resources.',
   },
-  host: process.env.VIRTUAL_HOST || 'localhost',
+  host: 'localhost:3000',
   basePath: '/',
   schemes: ['https', 'http'],
   consumes: ['application/json'],
   produces: ['application/json'],
-  securityDefinitions: {
-    Bearer: {
-      type: 'apiKey',
-      in: 'header',
-      name: 'Authorization',
-      description: 'Please enter a valid token to test the requests below...',
-    },
-  },
 };
 
-swaggerAutogen(outputFile, endpointsFiles, config)
+swaggerAutogen(outputFile, endpointsFiles, { ...config, securityDefinitions });
