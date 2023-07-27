@@ -3,7 +3,6 @@
 DevNexus is a cutting-edge application that provides users around the world with a seamless way to keep track of their favorite programming languages, areas of interest, and technologies. With it, users can easily stay up-to-date with the latest resources from their favorite developer communities.
 
 ## Table of Contents
-
 - [Installation](#installation)
 - [Usage](#usage)
 - [API Routes and Endpoints](#api-routes-and-endpoints)
@@ -13,7 +12,6 @@ DevNexus is a cutting-edge application that provides users around the world with
 - [Contact](#contact)
 
 ## Installation
-
 1. First, clone the repository:
 
    ```
@@ -34,7 +32,7 @@ DevNexus is a cutting-edge application that provides users around the world with
 4. Update the .env file with your own configurations:
    <br>Keep in mind there is no need to modify the mongo uri string itself.
    <br>Just paste your DB username and password to the ``DB_USER`` and ``DB_PASS`` variables, respectively.
-## Usage
+
    ```
    DB_URL=
    DB_PASS=
@@ -43,26 +41,36 @@ DevNexus is a cutting-edge application that provides users around the world with
    PORT=
    JWT_SECRET=
    ```
+   
+## Usage
 
-## API Routes and Endpoints
-List and describe the available API routes and endpoints here.
+| Script                  | Description                                     |
+| ----------------------- | ----------------------------------------------- |
+| `npm run dev:once`      | Starts the server (without nodemon) once        |
+| `npm run dev:nodemon`   | Starts the server using nodemon for development |
+| `npm run dev:swagger`   | Generates and serves Swagger documentation      |
+| `npm run dev:jest`      | Runs Jest tests in watch mode                   |
+| `npm run production`    | Starts the server in production mode            |
 
 
 ## Technologies Used
 
 ### Node.js, MongoDB, Atlas Cloud, JWT.
 
-| Main Libs    |---------------| Dev Dependencies       |
-| ------------ |---------------| ---------------------- |
-| express      |               | nodemon                |
-| mongoose     |               | prettier               |
-| cors         |               | jest                   |
-| bcrypt       |               | mongodb-memory-server  |
-| jsonwebtoken |               | swagger-ui-express     |
-| dotenv-safe  |               | swagger-autogen        |
-| pug          |               |                        |
+| Main Libs    | Dev Dependencies       |
+| ------------ | ---------------------- |
+| express      | nodemon                |
+| mongoose     | prettier               |
+| cors         | jest                   |
+| bcrypt       | mongodb-memory-server  |
+| jsonwebtoken | swagger-ui-express     |
+| dotenv-safe  | swagger-autogen        |
+| pug          |                        
 
-## Project Structure
+## Project Folder Structure
+
+The project follows the MVC architecture and boasts a highly modular folder structure. It uses separate directories for controllers, models, and routes, ensuring clean separation of concerns and layers. There is a separete tests folder for jest unitary tests, an utils folder for utilities and middleware functions like auth middleware and error handling and a tools folder for additional purposes such as serving documentation. This approach was used to ensure and enhances code readability, maintainability, and scalability.
+
 ```
 devNexus
 ├─ .env
@@ -109,6 +117,11 @@ devNexus
    ├─ swagger.js
    └─ swagger_output.json
 ```
+
+## API Routes and Endpoints
+List and describe the available API routes and endpoints here.
+
+
 Contributing
 Contributions are welcome! Follow these steps to contribute:
 
