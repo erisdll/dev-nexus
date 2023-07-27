@@ -17,15 +17,15 @@ DevNexus is an API that provides users around the world with a seamless way to k
    ```
    git clone https://github.com/nearlyerika/devNexus.git
    ```
-#### 2. Install the required dependencies:
+### 2. Install the required dependencies:
    ```
    npm install
    ```
-#### 3. Set up the environment variables:
+### 3. Set up the environment variables:
    ```
    cp .env.example .env
    ```
-#### 4. Update the .env file with your own configurations:
+### 4. Update the .env file with your own configurations:
    There is no need to modify the mongo uri string itself. <br>
    Just paste your DB username and password to the ``DB_USER`` and ``DB_PASS`` variables respectively. 
    ```
