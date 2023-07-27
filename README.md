@@ -1,6 +1,6 @@
 # DevNexus
 
-Short project description goes here.
+DevNexus is a cutting-edge application that provides users around the world with a seamless way to keep track of their favorite programming languages, areas of interest, and technologies. With it, users can easily stay up-to-date with the latest resources from their favorite developer communities.
 
 ## Table of Contents
 
@@ -17,7 +17,7 @@ Short project description goes here.
 1. First, clone the repository:
 
    ```
-   git clone https://github.com/nearlyerika/on22-b3-projeto-final.git
+   git clone https://github.com/nearlyerika/devNexus.git
    ```
 2. Install the required dependencies:
 
@@ -31,54 +31,84 @@ Short project description goes here.
    cp .env.example .env
    ```
 
-4. Update the .env file with your own configurations
+4. Update the .env file with your own configurations:
+   <br>Keep in mind there is no need to modify the mongo uri string itself.
+   <br>Just paste your DB username and password to the ``DB_USER`` and ``DB_PASS`` variables, respectively.
 ## Usage
-Explain how to use the API and any important considerations here.
+   ```
+   DB_URL=
+   DB_PASS=
+   DB_USER=
+
+   PORT=
+   JWT_SECRET=
+   ```
 
 ## API Routes and Endpoints
 List and describe the available API routes and endpoints here.
 
-GET /api/route
-Description: Description of the endpoint.
 
-Parameters:
-
-param1: Description of the parameter.
-Response:
-
-json
-Copy code
-{
-  "data": {
-    "key": "value"
-  }
-}
-POST /api/route
-Description: Description of the endpoint.
-
-Request Body:
-
-json
-Copy code
-{
-  "key": "value"
-}
-Response:
-
-json
-Copy code
-{
-  "data": "success"
-}
 ## Technologies Used
-List the main technologies and libraries used in the project.
 
-Express
-MongoDB
-Mongoose
-bcrypt
-jsonwebtoken
-Pug
+### Node.js, MongoDB, Atlas Cloud, JWT.
+
+| Main Libs    |---------------| Dev Dependencies       |
+| ------------ |---------------| ---------------------- |
+| express      |               | nodemon                |
+| mongoose     |               | prettier               |
+| cors         |               | jest                   |
+| bcrypt       |               | mongodb-memory-server  |
+| jsonwebtoken |               | swagger-ui-express     |
+| dotenv-safe  |               | swagger-autogen        |
+| pug          |               |                        |
+
+## Project Structure
+```
+devNexus
+├─ .env
+├─ .env.example
+├─ .gitignore
+├─ .prettierrc
+├─ package-lock.json
+├─ package.json
+├─ README.md
+├─ src
+│  ├─ app.js
+│  ├─ config
+│  │  └─ database.js
+│  ├─ controllers
+│  │  ├─ areaController.js
+│  │  ├─ authController.js
+│  │  ├─ langController.js
+│  │  ├─ techController.js
+│  │  ├─ userController.js
+│  │  └─ viewController.js
+│  ├─ models
+│  │  ├─ Area.js
+│  │  ├─ Lang.js
+│  │  ├─ Tech.js
+│  │  └─ User.js
+│  ├─ routes
+│  │  ├─ areaRouter.js
+│  │  ├─ authRouter.js
+│  │  ├─ langRouter.js
+│  │  ├─ techRouter.js
+│  │  └─ userRouter.js
+│  ├─ server
+│  │  └─ server.js
+│  ├─ utils
+│  │  ├─ authenticator.js
+│  │  ├─ capitalizer.js
+│  │  └─ errorHandler.js
+├─ tests
+│  ├─ area.test.js
+│  ├─ lang.test.js
+│  ├─ tech.test.js
+│  └─ user.test.js
+└─ tools
+   ├─ swagger.js
+   └─ swagger_output.json
+```
 Contributing
 Contributions are welcome! Follow these steps to contribute:
 
@@ -97,7 +127,7 @@ If you have any questions or feedback, feel free to contact me:
 Email: your.email@example.com
 GitHub: YourGitHubUsername
 
-devNexus-app
+devNexus
 ├─ .gitignore
 ├─ .prettierrc
 ├─ package-lock.json
@@ -142,5 +172,3 @@ devNexus-app
 └─ tools
    ├─ swagger.js
    └─ swagger_output.json
-
-```
