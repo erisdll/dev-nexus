@@ -49,6 +49,20 @@ For utilizing the devNexus app effectively, you can use the npm scripts listed b
 | `npm run dev:jest`      | Runs Jest tests in watch mode                   |
 | `npm run production`    | Starts the server in production mode            |
 
+## Technologies Used
+
+### Node.js, MongoDB, Atlas Cloud, JWT.
+
+| Main Libs    | Dev Dependencies       |
+| ------------ | ---------------------- |
+| express      | nodemon                |
+| mongoose     | prettier               |
+| cors         | jest                   |
+| bcrypt       | mongodb-memory-server  |
+| jsonwebtoken | swagger-ui-express     |
+| dotenv-safe  | swagger-autogen        |
+| pug          |                        
+
 ## Project Structure
 
 The project follows the MVC architecture and boasts a highly modular folder structure. It uses separate directories for controllers, models, and routes, ensuring clean separation of concerns and layers. There is a separete tests folder for jest unitary tests, an utils folder for utilities and middleware functions like auth middleware and error handling and a tools folder for additional purposes such as serving documentation. This approach was used to ensure and enhances code readability, maintainability, and scalability.
@@ -99,20 +113,6 @@ devNexus
    ├─ swagger.js
    └─ swagger_output.json
 ```
-
-## Technologies Used
-
-### Node.js, MongoDB, Atlas Cloud, JWT.
-
-| Main Libs    | Dev Dependencies       |
-| ------------ | ---------------------- |
-| express      | nodemon                |
-| mongoose     | prettier               |
-| cors         | jest                   |
-| bcrypt       | mongodb-memory-server  |
-| jsonwebtoken | swagger-ui-express     |
-| dotenv-safe  | swagger-autogen        |
-| pug          |                        
 
 ## API Routes and Endpoints
 List and describe the available API routes and endpoints here.
