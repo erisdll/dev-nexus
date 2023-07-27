@@ -13,7 +13,7 @@
       "type": "apiKey",
       "in": "header",
       "name": "Authorization",
-      "description": "Please enter a valid token to test the requests below..."
+      "description": "Please enter a valid token to test the requests below.\nDon't forget to add the 'Bearer' prefix!\nIt should look like: 'Bearer yourtoken.qwerty123.asds45'"
     }
   },
   "consumes": ["application/json"],
