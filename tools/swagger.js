@@ -18,16 +18,15 @@ const config = {
     description:
       'The devNexus API provides users around the world with a way to keep track of their favorite programming languages, areas of interest and technologies, as well as staying up to date with the communities favorite resources.',
   },
-  host: 'localhost:3000',
+  host: 'devnexus-i46j.onrender.com',
   basePath: '/',
   schemes: ['https', 'http'],
   consumes: ['application/json'],
   produces: ['application/json'],
   security: [
     {
-    "Bearer": []
-    }
-  ], 
+      Bearer: []
+    }],
 };
 
 swaggerAutogen(outputFile, endpointsFiles, { ...config, securityDefinitions });
