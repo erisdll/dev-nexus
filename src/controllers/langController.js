@@ -13,7 +13,7 @@ exports.createLang = async (req, res) => {
       designedBy,
       yearCreated,
       popularity,
-      langs,
+      areas,
       techs,
     } = req.body
 
@@ -27,7 +27,7 @@ exports.createLang = async (req, res) => {
       designedBy,
       yearCreated,
       popularity,
-      langs,
+      areas,
       techs,
     })
 

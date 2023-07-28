@@ -5,7 +5,7 @@
     "title": "devNexus",
     "description": "The devNexus API provides users around the world with a way to keep track of their favorite programming languages, areas of interest and technologies, as well as staying up to date with the communities favorite resources."
   },
-  "host": "devnexus-i46j.onrender.com",
+  "host": "dev-nexus.onrender.com",
   "basePath": "/",
   "schemes": ["https", "http"],
   "securityDefinitions": {
@@ -74,13 +74,10 @@
               "type": "object",
               "properties": {
                 "username": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
+                  "example": "cyberis"
                 },
                 "password": {
-                  "example": "any"
+                  "example": "F4K3_pass"
                 }
               }
             }
@@ -188,6 +185,39 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "any"
+                },
+                "description": {
+                  "example": "any"
+                },
+                "imgURL": {
+                  "example": "any"
+                },
+                "keyFeatures": {
+                  "example": "any"
+                },
+                "useCases": {
+                  "example": "any"
+                },
+                "popularity": {
+                  "example": "any"
+                },
+                "langs": {
+                  "example": "any"
+                },
+                "techs": {
+                  "example": "any"
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -430,7 +460,7 @@
                 "popularity": {
                   "example": "any"
                 },
-                "langs": {
+                "areas": {
                   "example": "any"
                 },
                 "techs": {
