@@ -74,13 +74,10 @@
               "type": "object",
               "properties": {
                 "username": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
+                  "example": "cyberis"
                 },
                 "password": {
-                  "example": "any"
+                  "example": "F4K3_pass"
                 }
               }
             }
@@ -188,6 +185,39 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "any"
+                },
+                "description": {
+                  "example": "any"
+                },
+                "imgURL": {
+                  "example": "any"
+                },
+                "keyFeatures": {
+                  "example": "any"
+                },
+                "useCases": {
+                  "example": "any"
+                },
+                "popularity": {
+                  "example": "any"
+                },
+                "langs": {
+                  "example": "any"
+                },
+                "techs": {
+                  "example": "any"
+                }
+              }
+            }
           }
         ],
         "responses": {
