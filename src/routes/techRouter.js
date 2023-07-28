@@ -14,5 +14,4 @@ router.post('/add', authenticateUser, isAdmin, techController.createTech);
 router.patch('/:name', authenticateUser, isAdmin, techController.updateTech);
 router.delete('/:name', authenticateUser, isAdmin, techController.deleteTech);
 
-
 module.exports = router;

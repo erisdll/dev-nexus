@@ -1,6 +1,7 @@
 # DevNexus
-
+<p style="text-align: justify;">
 DevNexus is an API that provides users around the world with a seamless way to keep track of their favorite programming languages, areas of interest, and technologies. With it, users can easily stay up-to-date with the latest resources from their favorite developer communities.
+
 
 ## Table of Contents
 - [Installation](#installation)
@@ -38,8 +39,9 @@ DevNexus is an API that provides users around the world with a seamless way to k
    ```
 
 ## Usage
-
+<p style="text-align: justify;">
 For utilizing the devNexus app effectively, you can use the npm scripts listed below. These scripts help you start the server, generate Swagger documentation, run tests, and launch the application in different modes, catering to both development and production environments.
+</p>
 
 | Script                  | Description                                     |
 | ----------------------- | ----------------------------------------------- |
@@ -51,21 +53,25 @@ For utilizing the devNexus app effectively, you can use the npm scripts listed b
 
 ## Technologies Used
 
-### Node.js, MongoDB, Atlas Cloud, JWT.
+### Node.js:
+<p style="text-align: justify;">
+The project tries to follow industry best practices for back-end development with JavaScript. It leverages non-blocking asynchronous JS to optimize the event loop, ensuring high performance and responsiveness. Error handling is robust with try-catch mechanisms and custom error throws.
 
-| Main Libs    | Dev Dependencies       |
-| ------------ | ---------------------- |
-| express      | nodemon                |
-| mongoose     | prettier               |
-| cors         | jest                   |
-| bcrypt       | mongodb-memory-server  |
-| jsonwebtoken | swagger-ui-express     |
-| dotenv-safe  | swagger-autogen        |
-| pug          |                        
+### MongoDB:
+<p style="text-align: justify;">
+The project is designed to connect to a Mongo Atlas Cloud DB. This integration with MongoDB' cloud service makes the project scalable and flexible, empowering the application to efficiently manage and retrieve data.
+
+### Frameworks & Libs
+| Main Dependencies |              | Dev Dependencies      |          |
+| ----------------- | ------------ | --------------------- | -------- |
+| express           | bcrypt       | swagger-ui-express    | nodemon  |
+| mongoose          | jsonwebtoken | swagger-autogen       | prettier |
+| dotenv-safe       | cors         | mongodb-memory-server | jest     |
 
 ## Project Structure
-
+<p style="text-align: justify;">
 The project follows the MVC architecture and boasts a highly modular folder structure. It uses separate directories for controllers, models, and routes, ensuring clean separation of concerns and layers. There is a separete tests folder for jest unitary tests, an utils folder for utilities and middleware functions like auth middleware and error handling and a tools folder for additional purposes such as serving documentation. This approach was used to ensure and enhances code readability, maintainability, and scalability.
+</p>
 
 ```
 devNexus
@@ -113,9 +119,53 @@ devNexus
    ├─ swagger.js
    └─ swagger_output.json
 ```
-
 ## API Routes and Endpoints
-List and describe the available API routes and endpoints here.
+
+<p style="text-align: justify;">
+The API offers several routes and endpoints to interact with the backend. These routes are organized into different routers for specific functionalities. It also provides access to a documentation route through a Swagger UI page, which enables users to explore and understand the available endpoints and their functionalities.<br>Please note that some routes are accessible to all users (public routes), while others are restricted to administrators or to authenticated users.
+
+Here's a list and brief description of each available API route:
+</p>
+
+1. **Documentation Route**
+   - `/documentation` Swagger documentation.
+
+1. **Authentication Routes**
+   - **POST** `/signup` - Allows users to **register** by providing a **username**, **email**, **password**, and **password confirmation**.
+   - **POST** `/login` - Allows users to **log in** by providing either a **username** or **email** and **password**.
+
+2. **Area Routes**
+   - **GET**`/` - Retrieves a list of all **available areas of interest**.
+   - **GET** `/:name` - Retrieves detailed information about a specific **area of interest** by its name.
+   - **POST** `/add` - Allows administrators to **create** a new **area of interest** by providing various details.
+   - **PATCH** `/:name` - Allows administrators to **update** specific details of an existing **area of interest**.
+   - **DELETE** `/:name` - Allows administrators to **delete** an existing **area of interest**.
+
+3. **Language Routes**
+   - **GET** `/` - Retrieves a list of all **available programming languages**.
+   - **GET** `/:name` - Retrieves detailed information about a specific **programming language** by its name.
+   - **POST** `/add` - Allows administrators to **create** a new **programming language** by providing various details.
+   - **PATCH** `/:name` - Allows administrators to **update** specific details of an existing **programming language**.
+   - **DELETE** `/:name` - Allows administrators to **delete** an existing **programming language**.
+
+4. **Technology Routes**
+   - **GET** `/` - Retrieves a list of all **available technologies**.
+   - **GET** `/:name` - Retrieves detailed information about a specific **technology** by its name.
+   - **POST** `/add` - Allows administrators to **create** a new **technology** by providing various details.
+   - **PATCH** `/:name` - Allows administrators to **update** specific details of an existing **technology**.
+   - **DELETE** `/:name` - Allows administrators to **delete** an existing **technology**.
+
+5. **User Routes**
+   - **POST** `/add` - Allows administrators to **create** a new **user** by providing various details.
+   - **GET** `/all` - Retrieves a list of all **users** (accessible only to admins).
+   - **GET** `/selections` - Retrieves an authenticated user's **selections** (profile settings).
+   - **GET** `/:username` - Retrieves detailed information about a specific **user** by their username.
+   - **GET** `/profile` - Retrieves an authenticated user's **profile information**.
+   - **PATCH** `/:username` - Allows administrators to **update** specific details of an existing **user**.
+   - **PATCH** `/selections` - Allows an authenticated user to **update** their **selections** (profile settings).
+   - **PATCH** `/profile` - Allows an authenticated user to **update** their **profile information**.
+   - **PATCH** `/deactivate` - Allows an authenticated user to **deactivate** their account.
+   - **DELETE** `/:username` - Allows administrators to **delete** an existing **user**.
 
 
 ## Contributing
