@@ -460,7 +460,7 @@
                 "popularity": {
                   "example": "any"
                 },
-                "langs": {
+                "areas": {
                   "example": "any"
                 },
                 "techs": {
