@@ -430,10 +430,10 @@
                 "popularity": {
                   "example": "any"
                 },
-                "langs": {
+                "areas": {
                   "example": "any"
                 },
-                "areas": {
+                "techs": {
                   "example": "any"
                 }
               }
