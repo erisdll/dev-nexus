@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
-const authenticateUser = async (req, res, next) => {
+const isAuth = async (req, res, next) => {
   try {
     const authHeader = req.get('Authorization');
     if (!authHeader) {
@@ -13,7 +14,6 @@ const authenticateUser = async (req, res, next) => {
     }
     req.user = {
       userId: decodedToken.userId,
-      isAdmin: decodedToken.isAdmin,
     };
 
     next();
@@ -34,10 +34,14 @@ const authenticateUser = async (req, res, next) => {
   }
 };
 
-const isAdmin = (req, res, next) => {
-  const isAdmin = req.user.isAdmin;
+const isAdmin = async (req, res, next) => {
+  const user = await User.findById(req.user.userId);
 
-  if (isAdmin === true) {
+  if (!user) {
+    throw new Error('User Not Found');
+  }
+
+  if (user.isAdmin === true) {
     next();
   } else {
     return res.status(403).json({
@@ -48,6 +52,6 @@ const isAdmin = (req, res, next) => {
 };
 
 module.exports = {
-  authenticateUser,
+  isAuth,
   isAdmin
 }

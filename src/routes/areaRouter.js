@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const areaController = require('../controllers/areaController');
-const { authenticateUser, isAdmin } = require('../utils/authenticator');
+const { isAuth, isAdmin } = require('../utils/authenticator');
 
 // Public Routes
 // These routes are accessible to any user.
@@ -10,8 +10,8 @@ router.get('/:name', areaController.getArea);
 
 // Management Routes
 // These are only accessible to admins.
-router.post('/add', authenticateUser, isAdmin, areaController.createArea);
-router.patch('/:name', authenticateUser, isAdmin, areaController.updateArea);
-router.delete('/:name', authenticateUser, isAdmin, areaController.deleteArea);
+router.post('/add', isAuth, isAdmin, areaController.createArea);
+router.patch('/:name', isAuth, isAdmin, areaController.updateArea);
+router.delete('/:name', isAuth, isAdmin, areaController.deleteArea);
 
 module.exports = router;
