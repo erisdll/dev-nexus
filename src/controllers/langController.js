@@ -1,5 +1,6 @@
 const Lang = require('../models/Lang');
 const { capitalizeName } = require('../utils/capitalizer');
+const AppError = require('../utils/appError');
 
 exports.createLang = async (req, res) => {
   try {
@@ -39,10 +40,7 @@ exports.createLang = async (req, res) => {
       data: { savedLang },
     });
   } catch (err) {
-    return res.status(500).json({
-      status: 'fail',
-      message: 'Internal server error!',
-    });
+    next(err);
   }
 };
 
@@ -51,7 +49,7 @@ exports.getAllLangs = async (req, res) => {
     const langs = await Lang.find();
 
     if (langs.length === 0) {
-      throw new Error('Not Found');
+      throw new AppError('Resource not found!', 404);
     }
 
     const langsList = langs.map(lang => ({
@@ -65,17 +63,7 @@ exports.getAllLangs = async (req, res) => {
       data: { langsList },
     });
   } catch (err) {
-    if (err.message === 'Not Found') {
-      return res.status(404).json({
-        status: 'fail',
-        message: 'Resource not found!',
-      });
-    } else {
-      return res.status(500).json({
-        status: 'fail',
-        message: 'Internal server error!',
-      });
-    }
+    next(err);
   }
 };
 
@@ -87,7 +75,7 @@ exports.getLang = async (req, res) => {
       .populate('techs');
 
     if (!lang) {
-      throw new Error('Not Found');
+      throw new AppError('Resource not found!', 404);
     }
 
     return res.status(200).json({
@@ -95,17 +83,7 @@ exports.getLang = async (req, res) => {
       data: { lang },
     });
   } catch (err) {
-    if (err.message === 'Not Found') {
-      return res.status(404).json({
-        status: 'fail',
-        message: 'Resource not found!',
-      });
-    } else {
-      return res.status(500).json({
-        status: 'fail',
-        message: 'Internal server error!',
-      });
-    }
+    next(err);
   }
 };
 
@@ -119,7 +97,7 @@ exports.updateLang = async (req, res) => {
     );
 
     if (!updatedlang) {
-      throw new Error('Not Found');
+      throw new AppError('Resource not found!', 404);
     }
 
     return res.status(200).json({
@@ -128,22 +106,7 @@ exports.updateLang = async (req, res) => {
       data: { updatedlang },
     });
   } catch (err) {
-    if (err.name === 'ValidationError') {
-      return res.status(400).json({
-        status: 'fail',
-        message: 'Bad request!'
-      });
-    } else if (err.message === 'Not Found') {
-      return res.status(404).json({
-        status: 'fail',
-        message: 'Resource not found!',
-      });
-    } else {
-      return res.status(500).json({
-        status: 'fail',
-        message: 'Internal server error!',
-      });
-    }
+    next(err);
   }
 };
 
@@ -153,7 +116,7 @@ exports.deleteLang = async (req, res) => {
     const deletedlang = await Lang.findOneAndDelete({ name: langName });
 
     if (!deletedlang) {
-      throw new Error('Not Found');
+      throw new AppError('Resource not found!', 404);
     }
 
     return res.status(200).json({
@@ -161,17 +124,7 @@ exports.deleteLang = async (req, res) => {
       message: `Resource named ${deletedlang.name} was deleted successfully!`,
     });
   } catch (err) {
-    if (err.message === 'Not Found') {
-      return res.status(404).json({
-        status: 'fail',
-        message: 'Error! Resource was not found or has already been deleted!',
-      });
-    } else {
-      return res.status(500).json({
-        status: 'fail',
-        message: 'Internal server error!',
-      });
-    }
+    next(err);
   }
 };
 
@@ -182,7 +135,7 @@ exports.getLangsByFeatures = async (req, res) => {
     const { tags } = req.query;
 
     if (!tags || typeof tags !== 'string') {
-      throw new Error('Invalid request! The "tags" parameter is empty.')
+      throw new AppError('Invalid request! The "tags" parameter is empty.', 400)
     }
 
     // This splits the 'tags' string into an array, replaces the '+' separator with '_'.
@@ -200,14 +153,6 @@ exports.getLangsByFeatures = async (req, res) => {
       },
     });
   } catch (err) {
-    if (err.message === 'Invalid request! The "tags" parameter is empty.') {
-      return res.status(400).json({
-        status: 'fail',
-        message: err.message,
-      });
-    } else {res.status(500).json({
-      status: 'fail',
-      message: 'Internal server error!',
-    });}
+    next(err);
   }
 };

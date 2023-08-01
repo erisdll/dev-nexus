@@ -1,5 +1,6 @@
 const Area = require('../models/Area');
 const { capitalizeName } = require('../utils/capitalizer');
+const AppError = require('../utils/appError');
 
 exports.createArea = async (req, res) => {
   try {
@@ -33,10 +34,7 @@ exports.createArea = async (req, res) => {
       data: { newArea: savedArea },
     });
   } catch (err) {
-    return res.status(500).json({
-      status: 'fail',
-      message: 'Internal server error',
-    });
+    return next(err)
   }
 };
 
@@ -45,7 +43,7 @@ exports.getAllAreas = async (req, res) => {
     const areas = await Area.find();
 
     if (areas.length === 0) {
-      throw new Error('Not Found');
+      throw new AppError('Resource not found!', 404);
     }
 
     const areasList = areas.map(area => ({
@@ -59,17 +57,7 @@ exports.getAllAreas = async (req, res) => {
       data: { areasList },
     });
   } catch (err) {
-    if (err.message === 'Not Found') {
-      return res.status(404).json({
-        status: 'fail',
-        message: 'Resource not found!',
-      });
-    } else {
-      return res.status(500).json({
-        status: 'fail',
-        message: 'Internal server error',
-      });
-    }
+    next(err);
   }
 };
 
@@ -81,7 +69,7 @@ exports.getArea = async (req, res) => {
       .populate('techs');
 
     if (!area) {
-      throw new Error('Not Found');
+      throw new AppError('Resource not found!', 404);
     }
 
     return res.status(200).json({
@@ -89,17 +77,7 @@ exports.getArea = async (req, res) => {
       data: { area },
     });
   } catch (err) {
-    if (err.message === 'Not Found') {
-      return res.status(404).json({
-        status: 'fail',
-        message: 'Resource not found!',
-      });
-    } else {
-      return res.status(500).json({
-        status: 'fail',
-        message: 'Internal server error',
-      });
-    }
+    next(err);
   }
 };
 
@@ -113,7 +91,7 @@ exports.updateArea = async (req, res) => {
     );
 
     if (!updatedArea) {
-      throw new Error('Not Found');
+      throw new AppError('Resource not found!', 404);
     }
 
     return res.status(200).json({
@@ -122,22 +100,7 @@ exports.updateArea = async (req, res) => {
       data: { updatedArea },
     });
   } catch (err) {
-    if (err.name === 'ValidationError') {
-      return res.status(400).json({
-        status: 'fail',
-        message: 'Bad request!'
-      });
-    } else if (err.message === 'Not Found') {
-      return res.status(404).json({
-        status: 'fail',
-        message: 'Resource not found!',
-      });
-    } else {
-      return res.status(500).json({
-        status: 'fail',
-        message: 'Internal server error',
-      });
-    }
+    next(err);
   }
 };
 
@@ -147,7 +110,7 @@ exports.deleteArea = async (req, res) => {
     const deletedArea = await Area.findOneAndDelete({ name: areaName });
 
     if (!deletedArea) {
-      throw new Error('Not Found');
+      throw new AppError('Resource does not exist or has already been deleted!', 404);
     }
 
     return res.status(200).json({
@@ -155,16 +118,6 @@ exports.deleteArea = async (req, res) => {
       message: 'Resource deleted successfully!',
     });
   } catch (err) {
-    if (err.message === 'Not Found') {
-      return res.status(404).json({
-        status: 'fail',
-        message: 'Error! Resource was not found or has already been deleted!',
-      });
-    } else {
-      return res.status(500).json({
-        status: 'fail',
-        message: 'Internal server error',
-      });
-    }
+    next(err);
   }
 };

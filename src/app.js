@@ -5,9 +5,9 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const swaggerUi = require('swagger-ui-express');
 
-const errorHandler = require('./utils/errorHandler');
+const errorHandler = require('./middleware/errorHandler');
 const swaggerFile = require('../tools/swagger_output.json');
-const dbconnection = require('./config/db');
+const database = require('./config/database');
 const authRouter = require('./routes/authRouter');
 const areaRouter = require('./routes/areaRouter');
 const langRouter = require('./routes/langRouter');
@@ -19,7 +19,7 @@ const app = express();
 app.use(express.json()).use(cors());
 app.use(express.static('public'));
 
-dbconnection.connect();
+database.connect();
 
 app.use('/', authRouter);
 app.use('/areas-of-interest', areaRouter);
