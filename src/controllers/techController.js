@@ -1,6 +1,6 @@
 const Tech = require('../models/Tech');
-const { capitalizeName } = require('../utils/capitalizer')
 const AppError = require('../utils/appError');
+const { capitalizeName } = require('../utils/capitalizer')
 
 exports.createTech = async (req, res) => {
   try {

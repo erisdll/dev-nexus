@@ -35,7 +35,6 @@ exports.signup = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
-    
     const user = await User.findOne({
       $or: [{ username: username }, { email: email }],
     });
