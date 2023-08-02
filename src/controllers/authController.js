@@ -7,12 +7,21 @@ const AppError = require('../utils/appError');
 // Saves user to DB, catches error if needed.
 exports.signup = async (req, res, next) => {
   try {
-    const { username, email, password, passwordConfirm } = req.body;
+    const { username, email, password, confirmPass } = req.body;
     
-    if (password !== passwordConfirm) {
+    if (password !== confirmPass) {
       throw new AppError('Passwords do not match', 400);
     } 
     
+    const regexPass = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/;
+
+    if (!regexPass.test(password)) {
+      throw new AppError(
+        'Password must be at least 8 characters long and contain at least 1 number, 1 uppercase letter, 1 lowercase letter, and 1 special character.',
+        400,
+      );
+    }
+
     const hashPass = await bcrypt.hash(password, 10);
     const newUser = new User({
       username,
@@ -26,7 +35,7 @@ exports.signup = async (req, res, next) => {
       data: { savedUser },
     });
   } catch (err) {
-    return next(err)
+    return next(err);
   }
 };
 
@@ -44,7 +53,7 @@ exports.login = async (req, res, next) => {
     }
 
     if (user.deactivated === true) {
-      throw new AppError('This account is deactivated!', 401)
+      throw new AppError('This account is deactivated!', 401);
     }
 
     const validPass = await bcrypt.compare(password, user.password);
