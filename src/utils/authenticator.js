@@ -9,46 +9,34 @@ const isAuth = async (req, res, next) => {
       throw new Error('No header!');
     }
     const token = authHeader.split(' ')[1];
-    const decodedToken = await jwt.verify(token, process.env.JWT_SECRET);
+    const decodedToken = await jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
     if (!authHeader) {
-      throw new Error('Invalid Token!');
+      throw new AppError('Invalid Token!');
     }
     req.user = {
       userId: decodedToken.userId,
     };
-
     next();
-  } catch (error) {
-    if (
-      error.message === 'No header!' ||
-      error.message === 'Invalid Token!'
-    ) {
-      return res.status(401).json({
-        status: 'failure',
-        message: error.message
-      });
-    }
-    return res.status(500).json({
-      status: 'failure',
-      message: 'Internal server error!',
-    });
+  } catch (err) {
+    next(err)
   }
 };
 
 const isAdmin = async (req, res, next) => {
-  const user = await User.findById(req.user.userId);
+  try {
+      const user = await User.findById(req.user.userId);
 
   if (!user) {
-    throw new Error('User Not Found');
+    throw new AppError('User Not Found');
+  } if (user.isAdmin === false) {
+    throw new AppError('Not authorized!', 401);
   }
-
-  if (user.isAdmin === true) {
-    next();
-  } else {
-    return res.status(403).json({
-      status: 'fail',
-      message: 'Forbidden! User is not an admin.',
-    });
+  next();
+  } catch (err) {
+    next(err)
   }
 };
 
