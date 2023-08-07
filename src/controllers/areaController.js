@@ -40,21 +40,37 @@ exports.createArea = async (req, res) => {
 
 exports.getAllAreas = async (req, res) => {
   try {
-    const areas = await Area.find();
+    const queryObj = { ...req.query };
+    const excludedFields = ['page', 'sort', 'limit', 'field'];
+    excludedFields.forEach(field => delete queryObj[field]);
+    
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
 
-    if (areas.length === 0) {
-      throw new AppError('Resource not found!', 404);
+    let query = Area.find(JSON.parse(queryStr));
+
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(',').join(' ')
+      query = query.sort(sortBy)
+    } else {
+      query = query.sort('-createdAt')
     }
 
-    const areasList = areas.map(area => ({
-      name: area.name,
-      description: area.description,
-      imgURL: area.imgURL
-    }));
+    const areas = await query;
+    
+    // if (areas.length === 0) {
+    //   throw new AppError('Resource not found!', 404);
+    // }
+    //
+    // const areasList = areas.map(area => ({
+    //   name: area.name,
+    //   description: area.description,
+    //   imgURL: area.imgURL
+    // }));
 
     return res.status(200).json({
       status: 'success',
-      data: { areasList },
+      data: { areas },
     });
   } catch (err) {
     next(err);
