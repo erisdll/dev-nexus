@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const areaController = require('../controllers/areaController');
-const { isAuth, isAdmin } = require('../utils/authenticator');
+const { isAuth } = require('../utils/isAuth');
+const { isAdmin } = require('../utils/isAdmin');
 
 // Public Routes
 // These routes are accessible to any user.

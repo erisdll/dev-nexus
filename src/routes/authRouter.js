@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
-const { isAuth } = require('../utils/authenticator');
+const { isAuth } = require('../utils/isAuth');
+const { isAdmin } = require('../utils/isAdmin');
 
 // Authentication Routes
 // These routes are accessible to any user.

@@ -12,17 +12,21 @@ exports.signup = async (req, res, next) => {
     if (password !== confirmPass) {
       throw new AppError('Passwords do not match', 400);
     } 
-    
+
+    console.log(password)
+
     const regexPass = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/;
 
-    if (!regexPass.test(password)) {
+    let hashPass = null
+    if (regexPass.test(password)) {
+      hashPass = await bcrypt.hash(password, 10);
+    } else {
       throw new AppError(
         'Password must be at least 8 characters long and contain at least 1 number, 1 uppercase letter, 1 lowercase letter, and 1 special character.',
         400,
       );
     }
-
-    const hashPass = await bcrypt.hash(password, 10);
+    
     const newUser = new User({
       username,
       email,
