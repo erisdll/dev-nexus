@@ -69,6 +69,10 @@ const areaSchema = new mongoose.Schema({
       ref: 'Tech',
     },
   ],
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const Area = mongoose.model('Area', areaSchema);

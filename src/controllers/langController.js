@@ -2,7 +2,7 @@ const Lang = require('../models/Lang');
 const AppError = require('../utils/appError');
 const { capitalizeName } = require('../utils/capitalizer');
 
-exports.createLang = async (req, res) => {
+exports.createLang = async (req, res, next) => {
   try {
     const {
       name,
@@ -44,30 +44,53 @@ exports.createLang = async (req, res) => {
   }
 };
 
-exports.getAllLangs = async (req, res) => {
+exports.getAllLangs = async (req, res, next) => {
   try {
-    const langs = await Lang.find();
+    const queryObj = { ...req.query };
+    const excludedFields = ['page', 'sort', 'limit', 'field'];
+    excludedFields.forEach(field => delete queryObj[field]);
 
-    if (langs.length === 0) {
-      throw new AppError('Resource not found!', 404);
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
+
+    let query = Lang.find(JSON.parse(queryStr));
+
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(',').join(' ')
+      query = query.sort(sortBy)
+    } else {
+      query = query.sort('-createdAt')
     }
 
-    const langsList = langs.map(lang => ({
-      name: lang.name,
-      description: lang.description,
-      imgURL: lang.imgURL
-    }));
+    if (req.query.fields) {
+      const fields = req.query.fields.split(',').join(' ')
+      query = query.select(fields)
+    } else {
+      query = query.select('-__v')
+    }
+
+    const page = req.query.page * 1 || 1
+    const limit = req.query.limit * 1 || 20
+    const skip = (page - 1) * limit
+    query = query.skip(skip).limit(limit)
+
+    if (req.query.page) {
+      const numLangs = await Lang.countDocuments()
+      if (skip >= numLangs) throw new Error('This page does not exist!');
+    }
+
+    const langs = await query
 
     return res.status(200).json({
       status: 'success',
-      data: { langsList },
+      data: { langs },
     });
   } catch (err) {
     next(err);
   }
 };
 
-exports.getLang = async (req, res) => {
+exports.getLang = async (req, res, next) => {
   try {
     const langName = capitalizeName(req.params.name);
     const lang = await Lang.findOne({ name: langName })
@@ -87,7 +110,7 @@ exports.getLang = async (req, res) => {
   }
 };
 
-exports.updateLang = async (req, res) => {
+exports.updateLang = async (req, res, next) => {
   try {
     const langName = capitalizeName(req.params.name);
     const updatedlang = await Lang.findOneAndUpdate(
@@ -110,7 +133,7 @@ exports.updateLang = async (req, res) => {
   }
 };
 
-exports.deleteLang = async (req, res) => {
+exports.deleteLang = async (req, res, next) => {
   try {
     const langName = capitalizeName(req.params.name);
     const deletedlang = await Lang.findOneAndDelete({ name: langName });
@@ -130,7 +153,7 @@ exports.deleteLang = async (req, res) => {
 
 // Other Operations
 
-exports.getLangsByFeatures = async (req, res) => {
+exports.getLangsByFeatures = async (req, res, next) => {
   try {
     const { tags } = req.query;
 

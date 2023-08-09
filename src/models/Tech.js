@@ -74,6 +74,10 @@ const techSchema = new mongoose.Schema({
       ref: 'Area',
     },
   ],
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  }
 });
 
 const Tech = mongoose.model('Tech', techSchema);

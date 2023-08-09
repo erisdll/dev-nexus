@@ -2,7 +2,7 @@ const Tech = require('../models/Tech');
 const AppError = require('../utils/appError');
 const { capitalizeName } = require('../utils/capitalizer')
 
-exports.createTech = async (req, res) => {
+exports.createTech = async (req, res, next) => {
   try {
     const {
       name,
@@ -12,7 +12,7 @@ exports.createTech = async (req, res) => {
       advantages,
       disadvantages,
       popularity,
-      langs,
+      Techs,
       areas,
     } = req.body
 
@@ -24,7 +24,7 @@ exports.createTech = async (req, res) => {
       advantages,
       disadvantages,
       popularity,
-      langs,
+      Techs,
       areas,
     })
 
@@ -40,34 +40,57 @@ exports.createTech = async (req, res) => {
   }
 };
 
-exports.getAllTechs = async (req, res) => {
+exports.getAllTechs = async (req, res, next) => {
   try {
-    const techs = await Tech.find();
+    const queryObj = { ...req.query };
+    const excludedFields = ['page', 'sort', 'limit', 'field'];
+    excludedFields.forEach(field => delete queryObj[field]);
 
-    if (techs.length === 0) {
-      throw new AppError('Resource not found!', 404);
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
+
+    let query = Tech.find(JSON.parse(queryStr));
+
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(',').join(' ');
+      query = query.sort(sortBy);
+    } else {
+      query = query.sort('-createdAt');
     }
 
-    const techsList = techs.map(tech => ({
-      name: tech.name,
-      description: tech.description,
-      imgURL: tech.imgURL
-    }));
+    if (req.query.fields) {
+      const fields = req.query.fields.split(',').join(' ');
+      query = query.select(fields);
+    } else {
+      query = query.select('-__v');
+    }
+
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 20;
+    const skip = (page - 1) * limit;
+    query = query.skip(skip).limit(limit);
+
+    if (req.query.page) {
+      const numTechs = await Tech.countDocuments();
+      if (skip >= numTechs) throw new Error('This page does not exist!');
+    }
+
+    const techs = await query;
 
     return res.status(200).json({
       status: 'success',
-      data: { techsList },
+      data: { techs },
     });
   } catch (err) {
     next(err);
   }
 };
 
-exports.getTech = async (req, res) => {
+exports.getTech = async (req, res, next) => {
   try {
     const techName = capitalizeName(req.params.name);
     const tech = await Tech.findOne({ name: techName })
-      .populate('langs')
+      .populate('Techs')
       .populate('areas');
 
     if (!tech) {
@@ -83,7 +106,7 @@ exports.getTech = async (req, res) => {
   }
 };
 
-exports.updateTech = async (req, res) => {
+exports.updateTech = async (req, res, next) => {
   try {
     const techName = capitalizeName(req.params.name);
     const updatedtech = await Tech.findOneAndUpdate(
@@ -106,7 +129,7 @@ exports.updateTech = async (req, res) => {
   }
 };
 
-exports.deleteTech = async (req, res) => {
+exports.deleteTech = async (req, res, next) => {
   try {
     const techName = capitalizeName(req.params.name);
     const deletedtech = await Tech.findOneAndDelete({ name: techName });

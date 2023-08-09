@@ -2,7 +2,7 @@ const Area = require('../models/Area');
 const AppError = require('../utils/appError');
 const { capitalizeName } = require('../utils/capitalizer');
 
-exports.createArea = async (req, res) => {
+exports.createArea = async (req, res, next) => {
   try {
     const {
       name,
@@ -38,7 +38,7 @@ exports.createArea = async (req, res) => {
   }
 };
 
-exports.getAllAreas = async (req, res) => {
+exports.getAllAreas = async (req, res, next) => {
   try {
     const queryObj = { ...req.query };
     const excludedFields = ['page', 'sort', 'limit', 'field'];
@@ -63,29 +63,29 @@ exports.getAllAreas = async (req, res) => {
       query = query.select('-__v')
     }
 
+    const page = req.query.page * 1 || 1
+    const limit = req.query.limit * 1 || 20
+    const skip = (page - 1) * limit
+    query = query.skip(skip).limit(limit)
+
+    if (req.query.page) {
+      const numAreas = await Area.countDocumentos()
+      if (skip >= numAreas) throw new Error('This page does not exist!');
+    }
+
     const areas = await query;
-    
-    // if (areas.length === 0) {
-    //   throw new AppError('Resource not found!', 404);
-    // }
-    //
-    // const areasList = areas.map(area => ({
-    //   name: area.name,
-    //   description: area.description,
-    //   imgURL: area.imgURL
-    // }));
 
     return res.status(200).json({
       status: 'success',
-      results: areasList.length,
+      results: areas.length,
       data: { areas },
     });
   } catch (err) {
-    next(err);
+    next(err)
   }
 };
 
-exports.getArea = async (req, res) => {
+exports.getArea = async (req, res, next) => {
   try {
     const areaName = capitalizeName(req.params.name);
     const area = await Area.findOne({ name: areaName })
@@ -105,7 +105,7 @@ exports.getArea = async (req, res) => {
   }
 };
 
-exports.updateArea = async (req, res) => {
+exports.updateArea = async (req, res, next) => {
   try {
     const areaName = capitalizeName(req.params.name);
     const updatedArea = await Area.findOneAndUpdate(
@@ -128,7 +128,7 @@ exports.updateArea = async (req, res) => {
   }
 };
 
-exports.deleteArea = async (req, res) => {
+exports.deleteArea = async (req, res, next) => {
   try {
     const areaName = capitalizeName(req.params.name);
     const deletedArea = await Area.findOneAndDelete({ name: areaName });

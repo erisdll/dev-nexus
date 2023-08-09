@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const AppError = require('../utils/appError');
 
-exports.createUser = async (req, res) => {
+exports.createUser = async (req, res, next) => {
   try {
     const {
       username,
@@ -46,7 +46,7 @@ exports.createUser = async (req, res) => {
   }
 }
 
-exports.getAllUsers = async (req, res) => {
+exports.getAllUsers = async (req, res, next) => {
   try {
     const users = await User.find();
     console.log(users)
@@ -69,7 +69,7 @@ exports.getAllUsers = async (req, res) => {
   }
 }
 
-exports.getUser = async (req, res) => {
+exports.getUser = async (req, res, next) => {
   try {
     const { username } = req.params;
     const user = await User.findOne(
@@ -97,7 +97,7 @@ exports.getUser = async (req, res) => {
   }
 }
 
-exports.updateUser = async (req, res) => {
+exports.updateUser = async (req, res, next) => {
   try {
     const { username } = req.params;
     const updatedData = req.body;
@@ -122,7 +122,7 @@ exports.updateUser = async (req, res) => {
   }
 }
 
-exports.deleteUser = async (req, res) => {
+exports.deleteUser = async (req, res, next) => {
   try {
     const { username } = req.params;
     const deletedUser = await User.findOneAndDelete({ username });
@@ -145,7 +145,7 @@ exports.deleteUser = async (req, res) => {
 // The following controller functions are related to the user's profile data.
 // They are designed to allow the user to update >only their own< profile.
 
-exports.getUserProfile = async (req, res) => {
+exports.getUserProfile = async (req, res, next) => {
   try {
     const userId = req.user.userId;
     const user = await User.findById(userId);
@@ -172,7 +172,7 @@ exports.getUserProfile = async (req, res) => {
   }
 }
 
-exports.updateUserProfile = async (req, res) => {
+exports.updateUserProfile = async (req, res, next) => {
   try {
     const userId = req.user.userId;
     const updatedData = req.body;
@@ -207,7 +207,7 @@ exports.updateUserProfile = async (req, res) => {
 }
 
 
-exports.getUserSelections = async (req, res) => { 
+exports.getUserSelections = async (req, res, next) => { 
   try {
     const { username } = req.params;
     const items = req.query.items || '';
@@ -256,7 +256,7 @@ exports.getUserSelections = async (req, res) => {
   }
 }
 
-exports.updateUserSelections = async (req, res) => {
+exports.updateUserSelections = async (req, res, next) => {
   try {
     const { username } = req.params;
     const { items } = req.query;
@@ -293,7 +293,7 @@ exports.updateUserSelections = async (req, res) => {
   }
 }; 
 
-exports.deactivateAcc = async (req, res) => {
+exports.deactivateAcc = async (req, res, next) => {
   try {
     const userId = req.user.userId;
     const { password } = req.body;
