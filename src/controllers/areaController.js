@@ -127,3 +127,24 @@ exports.deleteArea = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getAreaStats = async (req, res) => {
+  try {
+    const stats = Tour.aggregate([
+      {
+        $match: { popularityAvarage: { $gte: 4.5 } }
+      },
+      {
+        $group: {
+          _id: null,
+          numAreas: { $sum: 1},
+          avgPopularity: { $avg: '$popularityAvarage' },
+
+        }
+      }
+    ])
+
+  } catch (err) {
+    next(err)
+  }
+}
