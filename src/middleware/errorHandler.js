@@ -56,19 +56,18 @@ module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
 
-  if (process.env.NODE_ENV === 'DEVELOP') {
-    sendErrorDev(err, req, res);
-  } else if (process.env.NODE_ENV === 'PRODUCT') {
+  if (process.env.NODE_ENV === 'development') { // Change 'DEVELOP' to 'development'
+    sendErrorDev(err, res); // Removed 'req' and 'next' parameters
+  } else if (process.env.NODE_ENV === 'production') { // Change 'PRODUCT' to 'production'
     let error = { ...err };
     error.message = err.message;
 
     if (error.name === 'CastError') error = handleCastErrorDB(error);
-    if (error.code === 11000) error = handleDuplicateFieldsDB(error);
-    if (error.name === 'ValidationError')
-      error = handleValidationErrorDB(error);
+    if (error.code === 11000) error = handleDuplicateFieldDB(error); // Fixed function name
+    if (error.name === 'ValidationError') error = handleValidationErrorDB(error);
     if (error.name === 'JsonWebTokenError') error = handleJWTError();
     if (error.name === 'TokenExpiredError') error = handleJWTExpiredError();
 
-    sendErrorProd(error, req, res);
+    sendErrorProd(error, res); // Removed 'req' parameter
   }
 };

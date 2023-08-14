@@ -1,8 +1,9 @@
 const express = require('express');
-const router = express.Router();
 const userController = require('../controllers/userController');
 const { isAuth } = require('../utils/isAuth');
 const { isAdmin } = require('../utils/isAdmin');
+
+const router = express.Router();
 
 // Profile & Settings Routes 
 // These routes allow access to an authenticated user's private data.
