@@ -1,6 +1,15 @@
 const Tech = require('../models/Tech');
 const AppError = require('../utils/appError');
+const APIfeatures = require('../utils/apiFeatures');
 const { capitalizeName } = require('../utils/capitalizer')
+
+exports.aliasTopTechs = (req, res, next) => {
+  req.query.limit = '5';
+  req.query.sort = 'popularity';
+  req.query.fields = 'name, keyFeatures, advantages, popularity';
+  next();
+};
+
 
 exports.createTech = async (req, res, next) => {
   try {
@@ -42,43 +51,17 @@ exports.createTech = async (req, res, next) => {
 
 exports.getAllTechs = async (req, res, next) => {
   try {
-    const queryObj = { ...req.query };
-    const excludedFields = ['page', 'sort', 'limit', 'field'];
-    excludedFields.forEach(field => delete queryObj[field]);
+    const features = new APIfeatures(Tech.find(), req.query)
+      .filter()
+      .sort(req)
+      .limitFields(req)
+      .paginate();
 
-    let queryStr = JSON.stringify(queryObj);
-    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
-
-    let query = Tech.find(JSON.parse(queryStr));
-
-    if (req.query.sort) {
-      const sortBy = req.query.sort.split(',').join(' ');
-      query = query.sort(sortBy);
-    } else {
-      query = query.sort('-createdAt');
-    }
-
-    if (req.query.fields) {
-      const fields = req.query.fields.split(',').join(' ');
-      query = query.select(fields);
-    } else {
-      query = query.select('-__v');
-    }
-
-    const page = req.query.page * 1 || 1;
-    const limit = req.query.limit * 1 || 20;
-    const skip = (page - 1) * limit;
-    query = query.skip(skip).limit(limit);
-
-    if (req.query.page) {
-      const numTechs = await Tech.countDocuments();
-      if (skip >= numTechs) throw new Error('This page does not exist!');
-    }
-
-    const techs = await query;
+    const techs = await features.query;
 
     return res.status(200).json({
       status: 'success',
+      results: techs.length,
       data: { techs },
     });
   } catch (err) {
@@ -142,6 +125,25 @@ exports.deleteTech = async (req, res, next) => {
       status: 'success',
       message: `Resource named ${deletedtech.name} was deleted successfully!`,
     });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getTechStats = async (req, res, ) => {
+  try {
+    const stats = Tech.aggregate([
+      {
+        $match: { popularityAvarage: { $gte: 4.5 } },
+      },
+      {
+        $group: {
+          _id: null,
+          numTechs: { $sum: 1 },
+          avgPopularity: { $avg: '$popularityAvarage' },
+        },
+      },
+    ]);
   } catch (err) {
     next(err);
   }

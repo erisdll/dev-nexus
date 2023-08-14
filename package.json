@@ -8,6 +8,7 @@
     "dev:nodemon": "nodemon ./src/server/server.js",
     "dev:swagger": "node ./tools/swagger.js",
     "dev:jest": "jest --watchAll",
+    "dev:debug": "ndb .src/server/server.js",
     "production": "node ./src/server/server.js"
   },
   "repository": {
