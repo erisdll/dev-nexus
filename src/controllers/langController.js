@@ -1,7 +1,16 @@
 const Lang = require('../models/Lang');
+const AppError = require('../utils/appError');
+const APIfeatures = require('../utils/apiFeatures');
 const { capitalizeName } = require('../utils/capitalizer');
 
-exports.createLang = async (req, res) => {
+exports.aliasTopLangs = (req, res, next) => {
+  req.query.limit = '5';
+  req.query.sort = '-popularity';
+  req.query.fields = 'name, keyFeatures, advantages, popularity';
+  next();
+};
+
+exports.createLang = async (req, res, next) => {
   try {
     const {
       name,
@@ -39,47 +48,31 @@ exports.createLang = async (req, res) => {
       data: { savedLang },
     });
   } catch (err) {
-    return res.status(500).json({
-      status: 'fail',
-      message: 'Internal server error!',
-    });
+    next(err);
   }
 };
 
-exports.getAllLangs = async (req, res) => {
+exports.getAllLangs = async (req, res, next) => {
   try {
-    const langs = await Lang.find();
+    const features = new APIfeatures(Lang.find(), req.query)
+      .filter()
+      .sort(req)
+      .limitFields(req)
+      .paginate();
 
-    if (langs.length === 0) {
-      throw new Error('Not Found');
-    }
-
-    const langsList = langs.map(lang => ({
-      name: lang.name,
-      description: lang.description,
-      imgURL: lang.imgURL
-    }));
+    const langs = await features.query;
 
     return res.status(200).json({
       status: 'success',
-      data: { langsList },
+      results: langs.length,
+      data: { langs },
     });
   } catch (err) {
-    if (err.message === 'Not Found') {
-      return res.status(404).json({
-        status: 'fail',
-        message: 'Resource not found!',
-      });
-    } else {
-      return res.status(500).json({
-        status: 'fail',
-        message: 'Internal server error!',
-      });
-    }
+    next(err);
   }
 };
 
-exports.getLang = async (req, res) => {
+exports.getLang = async (req, res, next) => {
   try {
     const langName = capitalizeName(req.params.name);
     const lang = await Lang.findOne({ name: langName })
@@ -87,7 +80,7 @@ exports.getLang = async (req, res) => {
       .populate('techs');
 
     if (!lang) {
-      throw new Error('Not Found');
+      throw new AppError('Resource not found!', 404);
     }
 
     return res.status(200).json({
@@ -95,21 +88,11 @@ exports.getLang = async (req, res) => {
       data: { lang },
     });
   } catch (err) {
-    if (err.message === 'Not Found') {
-      return res.status(404).json({
-        status: 'fail',
-        message: 'Resource not found!',
-      });
-    } else {
-      return res.status(500).json({
-        status: 'fail',
-        message: 'Internal server error!',
-      });
-    }
+    next(err);
   }
 };
 
-exports.updateLang = async (req, res) => {
+exports.updateLang = async (req, res, next) => {
   try {
     const langName = capitalizeName(req.params.name);
     const updatedlang = await Lang.findOneAndUpdate(
@@ -119,7 +102,7 @@ exports.updateLang = async (req, res) => {
     );
 
     if (!updatedlang) {
-      throw new Error('Not Found');
+      throw new AppError('Resource not found!', 404);
     }
 
     return res.status(200).json({
@@ -128,32 +111,17 @@ exports.updateLang = async (req, res) => {
       data: { updatedlang },
     });
   } catch (err) {
-    if (err.name === 'ValidationError') {
-      return res.status(400).json({
-        status: 'fail',
-        message: 'Bad request!'
-      });
-    } else if (err.message === 'Not Found') {
-      return res.status(404).json({
-        status: 'fail',
-        message: 'Resource not found!',
-      });
-    } else {
-      return res.status(500).json({
-        status: 'fail',
-        message: 'Internal server error!',
-      });
-    }
+    next(err);
   }
 };
 
-exports.deleteLang = async (req, res) => {
+exports.deleteLang = async (req, res, next) => {
   try {
     const langName = capitalizeName(req.params.name);
     const deletedlang = await Lang.findOneAndDelete({ name: langName });
 
     if (!deletedlang) {
-      throw new Error('Not Found');
+      throw new AppError('Resource not found!', 404);
     }
 
     return res.status(200).json({
@@ -161,28 +129,18 @@ exports.deleteLang = async (req, res) => {
       message: `Resource named ${deletedlang.name} was deleted successfully!`,
     });
   } catch (err) {
-    if (err.message === 'Not Found') {
-      return res.status(404).json({
-        status: 'fail',
-        message: 'Error! Resource was not found or has already been deleted!',
-      });
-    } else {
-      return res.status(500).json({
-        status: 'fail',
-        message: 'Internal server error!',
-      });
-    }
+    next(err);
   }
 };
 
 // Other Operations
 
-exports.getLangsByFeatures = async (req, res) => {
+exports.getLangsByFeatures = async (req, res, next) => {
   try {
     const { tags } = req.query;
 
     if (!tags || typeof tags !== 'string') {
-      throw new Error('Invalid request! The "tags" parameter is empty.')
+      throw new AppError('Invalid request! The "tags" parameter is empty.', 400)
     }
 
     // This splits the 'tags' string into an array, replaces the '+' separator with '_'.
@@ -200,14 +158,25 @@ exports.getLangsByFeatures = async (req, res) => {
       },
     });
   } catch (err) {
-    if (err.message === 'Invalid request! The "tags" parameter is empty.') {
-      return res.status(400).json({
-        status: 'fail',
-        message: err.message,
-      });
-    } else {res.status(500).json({
-      status: 'fail',
-      message: 'Internal server error!',
-    });}
+    next(err);
+  }
+};
+
+exports.getLangStats = async (req, res, next) => {
+  try {
+    const stats = Lang.aggregate([
+      {
+        $match: { popularityAvarage: { $gte: 4.5 } },
+      },
+      {
+        $group: {
+          _id: null,
+          numAreas: { $sum: 1 },
+          avgPopularity: { $avg: '$popularityAvarage' },
+        },
+      },
+    ]);
+  } catch (err) {
+    next(err);
   }
 };

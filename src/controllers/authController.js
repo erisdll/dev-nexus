@@ -1,18 +1,33 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const AppError = require('../utils/appError');
+const APIfeatures = require('../utils/apiFeatures');
 
 // Register new user: destructures req data, hashes password.
 // Saves user to DB, catches error if needed.
-exports.signup = async (req, res) => {
+exports.signup = async (req, res, next) => {
   try {
-    const { username, email, password, passwordConfirm } = req.body;
+    const { username, email, password, confirmPass } = req.body;
     
-    if (password !== passwordConfirm) {
-      throw new Error('Passwords do not match');
+    if (password !== confirmPass) {
+      throw new AppError('Passwords do not match', 400);
     } 
+
+    console.log(password)
+
+    const regexPass = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/;
+
+    let hashPass = null
+    if (regexPass.test(password)) {
+      hashPass = await bcrypt.hash(password, 10);
+    } else {
+      throw new AppError(
+        'Password must be at least 8 characters long and contain at least 1 number, 1 uppercase letter, 1 lowercase letter, and 1 special character.',
+        400,
+      );
+    }
     
-    const hashPass = await bcrypt.hash(password, 10);
     const newUser = new User({
       username,
       email,
@@ -25,48 +40,36 @@ exports.signup = async (req, res) => {
       data: { savedUser },
     });
   } catch (err) {
-    if (err.message === 'Passwords do not match') {
-      res.status(400).json({
-        status: 'fail',
-        message: 'Passwords do not match!',
-      });
-    } else {
-      return res.status(500).json({
-        status: 'fail',
-        message: 'Internal server error!',
-        error: err.message
-      });
-    }
+    return next(err);
   }
 };
 
 // Login: destructures req data, checks user by username or email.
 // Checks password, signs user, returns token. Throw errors if needed.
-exports.login = async (req, res) => {
+exports.login = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
-    
     const user = await User.findOne({
       $or: [{ username: username }, { email: email }],
     });
 
     if (!user) {
-      throw new Error('Invalid credentials!')
+      throw new AppError('Invalid credentials!', 401);
     }
 
     if (user.deactivated === true) {
-      throw new Error('This account is deactivated!')
+      throw new AppError('This account is deactivated!', 401);
     }
 
     const validPass = await bcrypt.compare(password, user.password);
     
     if (!validPass) {
-      throw new Error('Invalid credentials!')
+      throw new AppError('Invalid credentials!', 401);
     }
 
     const token = jwt.sign(
       {
-        userId: user._id,
+        userId: user._id, expiresIn: process.env.EXPIRES_IN
       },
       process.env.JWT_SECRET
     );
@@ -81,32 +84,22 @@ exports.login = async (req, res) => {
     });
 
   } catch (err) {
-    if (
-      err.message === 'Invalid credentials!' ||
-      err.message === 'This Account is Deactivated!'
-    ) {
-      return res.status(401).json({
-        status: 'fail',
-        message: err.message,
-      });
-    } else {
-      return res.status(500).json({
-        status: 'fail',
-        message: 'Internal server error!',
-      });
-    }
+    return next(err)
   }
 };
 
-exports.updatePassword = async (req, res) => {
+exports.updatePassword = async (req, res, next) => {
   try {
     const userId = req.user.userId;
-    const { currentPass, newPassword, newPasswordConfirm } = req.body;
+    const { currentPass, newPassword, newPassConfirm } = req.body;
 
     const user = await User.findById(userId);
 
     if (!user) {
-      throw new Error('User not found');
+      throw new AppError('User not found!', 404);
+    }
+    if (newPassword !== newPassConfirm) {
+      throw new AppError('Passwords do not match', 400);
     }
 
     const validCurrentPass = await bcrypt.compare(
@@ -115,10 +108,7 @@ exports.updatePassword = async (req, res) => {
     );
 
     if (!validCurrentPass) {
-      throw new Error('Invalid password');
-    }
-    if (newPassword !== newPasswordConfirm) {
-      throw new Error('Passwords do not match');
+      throw new AppError('Invalid credentials!', 401);
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -131,26 +121,6 @@ exports.updatePassword = async (req, res) => {
       message: 'Password updated successfully!',
     });
   } catch (err) {
-    if (err.message === 'Passwords do not match') {
-      res.status(400).json({
-        status: 'fail',
-        message: 'Passwords do not match!',
-      });
-    } else if (err.message === 'Invalid password') {
-      res.status(401).json({
-        status: 'fail',
-        message: 'Invalid password!',
-      });
-    } else if (err.message === 'User not found') {
-      res.status(404).json({
-        status: 'fail',
-        message: 'User not found!',
-      });
-    } else {
-      res.status(500).json({
-        status: 'fail',
-        message: 'Internal server error',
-      });
-    }
+    return next(err);
   }
 };

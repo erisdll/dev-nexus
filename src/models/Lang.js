@@ -116,6 +116,10 @@ const langSchema = new mongoose.Schema({
       ref: 'Tech',
     },
   ],
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const Lang = mongoose.model('Lang', langSchema);

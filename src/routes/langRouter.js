@@ -1,17 +1,23 @@
 const express = require('express');
-const router = express.Router();
 const langController = require('../controllers/langController');
-const { isAuth, isAdmin } = require('../utils/authenticator');
+const { isAuth } = require('../utils/isAuth');
+const { isAdmin } = require('../utils/isAdmin');
 
-// Public Routes
-// These routes are accessible to any user.
-router.get('/', langController.getAllLangs);
-router.get('/:name', langController.getLang);
+const router = express.Router();
 
-// Management Routes
-// These are only accessible to admins.
-router.post('/add', isAuth, isAdmin, langController.createLang);
-router.patch('/:name', isAuth, isAdmin, langController.updateLang);
-router.delete('/:name', isAuth, isAdmin, langController.deleteLang);
+router
+  .route('/top-five')
+  .get(langController.aliasTopLangs, langController.getAllLangs);
+
+router
+  .route('/')
+  .get(langController.getAllLangs)
+  .post(isAuth, isAdmin, langController.createLang);
+
+router
+  .route('/:name')
+  .get(langController.getLang)
+  .patch(isAuth, isAdmin, langController.updateLang)
+  .delete(isAuth, isAdmin, langController.deleteLang);
 
 module.exports = router;

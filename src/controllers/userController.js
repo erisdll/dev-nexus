@@ -1,7 +1,9 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
+const AppError = require('../utils/appError');
+const APIfeatures = require('../utils/apiFeatures');
 
-exports.createUser = async (req, res) => {
+exports.createUser = async (req, res, next) => {
   try {
     const {
       username,
@@ -41,19 +43,16 @@ exports.createUser = async (req, res) => {
       data: { savedUser },
     });
   } catch (err) {
-    return res.status(500).json({
-      status: 'fail',
-      message: 'Internal server error!',
-    });
+    next()
   }
 }
 
-exports.getAllUsers = async (req, res) => {
+exports.getAllUsers = async (req, res, next) => {
   try {
     const users = await User.find();
     console.log(users)
     if (users.length === 0) {
-      throw new Error('Not Found');
+      throw new AppError('User not found!', 404);
     }
 
     const usersList = users.map(user => ({
@@ -67,21 +66,11 @@ exports.getAllUsers = async (req, res) => {
       data: { users: usersList },
     });
   } catch (err) {
-    if (err.message === 'Not Found') {
-      res.status(404).json({
-        status: 'fail',
-        message: 'Resource not found!',
-      });
-    } else {
-      res.status(500).json({
-        status: 'fail',
-        message: 'Internal server error',
-      });
-    }
+    next(err)
   }
 }
 
-exports.getUser = async (req, res) => {
+exports.getUser = async (req, res, next) => {
   try {
     const { username } = req.params;
     const user = await User.findOne(
@@ -97,7 +86,7 @@ exports.getUser = async (req, res) => {
     .populate('selectedTechs')
 
     if (!user) {
-      throw new Error('Not Found');
+      throw new AppError('User not found!', 404);
     }
 
     res.status(200).json({
@@ -105,21 +94,11 @@ exports.getUser = async (req, res) => {
       data: { user },
     });
   } catch (err) {
-    if (err.message === 'Not Found') {
-      res.status(404).json({
-        status: 'fail',
-        message: 'User not found!',
-      });
-    } else {
-      res.status(500).json({
-        status: 'fail',
-        message: 'Internal server error',
-      });
-    }
+    next(err)
   }
 }
 
-exports.updateUser = async (req, res) => {
+exports.updateUser = async (req, res, next) => {
   try {
     const { username } = req.params;
     const updatedData = req.body;
@@ -131,7 +110,7 @@ exports.updateUser = async (req, res) => {
     );
     
     if (!user) {
-      throw new Error('Not Found');
+      throw new AppError('User not found!', 404);
     }
     
     res.status(200).json({
@@ -140,27 +119,17 @@ exports.updateUser = async (req, res) => {
       data: { user },
     });
   } catch (err) {
-    if (err.message === 'Not Found') {
-      res.status(404).json({
-        status: 'fail',
-        message: 'User not found!',
-      });
-    } else {
-      res.status(500).json({
-        status: 'fail',
-        message: 'Internal server error',
-      });
-    }
+    next(err)
   }
 }
 
-exports.deleteUser = async (req, res) => {
+exports.deleteUser = async (req, res, next) => {
   try {
     const { username } = req.params;
     const deletedUser = await User.findOneAndDelete({ username });
 
     if (!deletedUser) {
-      throw new Error('Not Found');
+      throw new AppError('User not found!', 404);
     }
 
     res.status(200).json({
@@ -169,17 +138,7 @@ exports.deleteUser = async (req, res) => {
       data: { deletedUser },
     });
   } catch (err) {
-    if (err.message === 'Not Found') {
-      res.status(404).json({
-        status: 'fail',
-        message: `Error! User ${req.params.username} was not found or has already been deleted!`,
-      });
-    } else {
-      res.status(500).json({
-        status: 'fail',
-        message: 'Internal server error',
-      });
-    }
+    next(err)
   }
 }
 
@@ -187,13 +146,13 @@ exports.deleteUser = async (req, res) => {
 // The following controller functions are related to the user's profile data.
 // They are designed to allow the user to update >only their own< profile.
 
-exports.getUserProfile = async (req, res) => {
+exports.getUserProfile = async (req, res, next) => {
   try {
     const userId = req.user.userId;
     const user = await User.findById(userId);
 
     if (!user) {
-      throw new Error('Not Found');
+      throw new AppError('User not found!', 404);
     }
 
     const userProfile = {
@@ -210,21 +169,11 @@ exports.getUserProfile = async (req, res) => {
       data: { userProfile },
     });
   } catch (err) {
-    if (err.message === 'Not Found') {
-      res.status(404).json({
-        status: 'fail',
-        message: 'User not found!',
-      });
-    } else {
-      res.status(500).json({
-        status: 'fail',
-        message: 'Internal server error',
-      });
-    }
+    next(err);
   }
 }
 
-exports.updateUserProfile = async (req, res) => {
+exports.updateUserProfile = async (req, res, next) => {
   try {
     const userId = req.user.userId;
     const updatedData = req.body;
@@ -236,7 +185,7 @@ exports.updateUserProfile = async (req, res) => {
     );
 
     if (!updatedUser) {
-      throw new Error('Not Found');
+      throw new AppError('User not found!', 404);
     }
 
     const userProfile = {
@@ -254,22 +203,12 @@ exports.updateUserProfile = async (req, res) => {
       data: { userProfile },
     });
   } catch (err) {
-    if (err.message === 'Not Found') {
-      res.status(404).json({
-        status: 'fail',
-        message: 'User not found!',
-      });
-    } else {
-      res.status(500).json({
-        status: 'fail',
-        message: 'Internal server error',
-      });
-    }
+    next(err);
   }
 }
 
 
-exports.getUserSelections = async (req, res) => { 
+exports.getUserSelections = async (req, res, next) => { 
   try {
     const { username } = req.params;
     const items = req.query.items || '';
@@ -303,7 +242,7 @@ exports.getUserSelections = async (req, res) => {
     .lean();
 
     if (!selections) {
-      throw new Error('Not Found');
+      throw new AppError('User not found!', 404);
     }
 
     res.status(200).json({
@@ -314,21 +253,11 @@ exports.getUserSelections = async (req, res) => {
       },
     });
   } catch (err) {
-    if (err.message === 'Not Found') {
-      res.status(404).json({
-        status: 'fail',
-        message: 'User not found!',
-      });
-    } else {
-      res.status(500).json({
-        status: 'fail',
-        message: 'Internal server error',
-      });
-    }
+    next(err);
   }
 }
 
-exports.updateUserSelections = async (req, res) => {
+exports.updateUserSelections = async (req, res, next) => {
   try {
     const { username } = req.params;
     const { items } = req.query;
@@ -350,7 +279,7 @@ exports.updateUserSelections = async (req, res) => {
     );
 
     if (!user) {
-      throw new Error('User not found');
+      throw new AppError('User not found!', 404);
     }
 
     res.status(200).json({
@@ -361,21 +290,11 @@ exports.updateUserSelections = async (req, res) => {
       },
     });
   } catch (err) {
-    if (err.message === 'User not found') {
-      res.status(404).json({
-        status: 'fail',
-        message: 'User not found!',
-      });
-    } else {
-      res.status(500).json({
-        status: 'fail',
-        message: 'Internal server error',
-      });
-    }
+    next(err);
   }
 }; 
 
-exports.deactivateAcc = async (req, res) => {
+exports.deactivateAcc = async (req, res, next) => {
   try {
     const userId = req.user.userId;
     const { password } = req.body;
@@ -383,13 +302,13 @@ exports.deactivateAcc = async (req, res) => {
     const user = await User.findById(userId);
 
     if (!user) {
-      throw new Error('User not found');
+      throw new AppError('User not found!', 404);
     }
 
     const validPass = await bcrypt.compare(password, user.password);
 
     if (!validPass) {
-      throw new Error('Invalid password');
+      throw new AppError('Invalid credentials!', 401);
     }
 
     user.deactivated = true;
@@ -400,21 +319,6 @@ exports.deactivateAcc = async (req, res) => {
       message: 'Account deactivated successfully!',
     });
   } catch (err) {
-    if (err.message === 'Invalid password') {
-      res.status(401).json({
-        status: 'fail',
-        message: 'Invalid password!',
-      });
-    } else if (err.message === 'User not found') {
-      res.status(404).json({
-        status: 'fail',
-        message: 'User not found!',
-      });
-    } else {
-      res.status(500).json({
-        status: 'fail',
-        message: 'Internal server error',
-      });
-    }
+    next(err);
   }
 };
