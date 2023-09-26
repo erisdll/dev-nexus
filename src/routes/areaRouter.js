@@ -1,28 +1,23 @@
 const express = require('express');
+const areaController = require('../controllers/areaController');
+const { isAuth } = require('../utils/isAuth');
+const { isAdmin } = require('../utils/isAdmin');
+
 const router = express.Router();
-const {
-  aliasForAreas,
-  createArea,
-  getAllAreas,
-  getArea,
-  updateArea,
-  deleteArea
-} = require('../controllers/areaController');
 
-const { isAuth, isAdmin } = require('../utils/authenticator');
-
-router.route('/top-five')
-  .get(aliasForAreas, getAllAreas)
+router
+  .route('/top-five')
+  .get(areaController.aliasTopAreas, areaController.getAllAreas);
 
 router
   .route('/')
-  .get(getAllAreas)
-  .post(isAuth, isAdmin, createArea);
+  .get(areaController.getAllAreas)
+  .post(isAuth, isAdmin, areaController.createArea);
 
 router
   .route('/:name')
-  .get(getArea)
-  .patch(isAuth, isAdmin, updateArea)
-  .delete(isAuth, isAdmin, deleteArea);
+  .get(areaController.getArea)
+  .patch(isAuth, isAdmin, areaController.updateArea)
+  .delete(isAuth, isAdmin, areaController.deleteArea);
 
 module.exports = router;

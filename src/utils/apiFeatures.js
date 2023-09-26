@@ -4,9 +4,9 @@ class APIfeatures {
     this.queryString = queryString;
   }
 
-  filter() {
+  filter(req) {
     const queryObj = { ...this.queryString };
-    const excludedFields = ['page', 'sort', 'limit', 'field'];
+    const excludedFields = ['page', 'sort', 'limit', 'fields'];
     excludedFields.forEach(field => delete queryObj[field]);
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
@@ -14,7 +14,7 @@ class APIfeatures {
     return this;
   }
 
-  sort() {
+  sort(req) {
     if (this.queryString.sort) {
       const sortBy = req.query.sort.split(',').join(' ');
       this.query = this.query.sort(sortBy);
@@ -24,7 +24,7 @@ class APIfeatures {
     return this;
   }
 
-  limitFields() {
+  limitFields(req) {
     if (this.queryString.fields) {
       const fields = req.query.fields.split(',').join(' ');
       this.query = this.query.select(fields);

@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const AppError = require('../utils/appError');
+const APIfeatures = require('../utils/apiFeatures');
 
 // Register new user: destructures req data, hashes password.
 // Saves user to DB, catches error if needed.

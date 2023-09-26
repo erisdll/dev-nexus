@@ -1,12 +1,12 @@
 const Area = require('../models/Area');
-const APIfeatures = require('../utils/apiFeatures')
 const AppError = require('../utils/appError');
+const APIfeatures = require('../utils/apiFeatures')
 const { capitalizeName } = require('../utils/capitalizer');
 
-exports.aliasForAreas = (req, res, next) => {
+exports.aliasTopAreas = (req, res, next) => {
   req.query.limit = '5';
-  req.query.sort = 'popularity';
-  req.query.fields = 'name, keyFeatures, useCases, popularity';
+  req.query.sort = '-popularity';
+  req.query.fields = 'name, popularity, description';
   next();
 }
 
@@ -48,11 +48,10 @@ exports.createArea = async (req, res, next) => {
 
 exports.getAllAreas = async (req, res, next) => {
   try {
-
     const features = new APIfeatures(Area.find(), req.query)
       .filter()
-      .sort()
-      .limitFields()
+      .sort(req)
+      .limitFields(req)
       .paginate();
     
     const areas = await features.query;
@@ -63,7 +62,7 @@ exports.getAllAreas = async (req, res, next) => {
       data: { areas },
     });
   } catch (err) {
-    next(err)
+    console.log(err)
   }
 };
 
@@ -128,9 +127,9 @@ exports.deleteArea = async (req, res, next) => {
   }
 };
 
-exports.getAreaStats = async (req, res) => {
+exports.getAreaStats = async (req, res, next) => {
   try {
-    const stats = Tour.aggregate([
+    const stats = Area.aggregate([
       {
         $match: { popularityAvarage: { $gte: 4.5 } }
       },

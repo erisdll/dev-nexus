@@ -1,6 +1,14 @@
 const Lang = require('../models/Lang');
 const AppError = require('../utils/appError');
+const APIfeatures = require('../utils/apiFeatures');
 const { capitalizeName } = require('../utils/capitalizer');
+
+exports.aliasTopLangs = (req, res, next) => {
+  req.query.limit = '5';
+  req.query.sort = '-popularity';
+  req.query.fields = 'name, keyFeatures, advantages, popularity';
+  next();
+};
 
 exports.createLang = async (req, res, next) => {
   try {
@@ -46,43 +54,17 @@ exports.createLang = async (req, res, next) => {
 
 exports.getAllLangs = async (req, res, next) => {
   try {
-    const queryObj = { ...req.query };
-    const excludedFields = ['page', 'sort', 'limit', 'field'];
-    excludedFields.forEach(field => delete queryObj[field]);
+    const features = new APIfeatures(Lang.find(), req.query)
+      .filter()
+      .sort(req)
+      .limitFields(req)
+      .paginate();
 
-    let queryStr = JSON.stringify(queryObj);
-    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
-
-    let query = Lang.find(JSON.parse(queryStr));
-
-    if (req.query.sort) {
-      const sortBy = req.query.sort.split(',').join(' ')
-      query = query.sort(sortBy)
-    } else {
-      query = query.sort('-createdAt')
-    }
-
-    if (req.query.fields) {
-      const fields = req.query.fields.split(',').join(' ')
-      query = query.select(fields)
-    } else {
-      query = query.select('-__v')
-    }
-
-    const page = req.query.page * 1 || 1
-    const limit = req.query.limit * 1 || 20
-    const skip = (page - 1) * limit
-    query = query.skip(skip).limit(limit)
-
-    if (req.query.page) {
-      const numLangs = await Lang.countDocuments()
-      if (skip >= numLangs) throw new Error('This page does not exist!');
-    }
-
-    const langs = await query
+    const langs = await features.query;
 
     return res.status(200).json({
       status: 'success',
+      results: langs.length,
       data: { langs },
     });
   } catch (err) {
@@ -175,6 +157,25 @@ exports.getLangsByFeatures = async (req, res, next) => {
         languages: matchingLangs,
       },
     });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getLangStats = async (req, res, next) => {
+  try {
+    const stats = Lang.aggregate([
+      {
+        $match: { popularityAvarage: { $gte: 4.5 } },
+      },
+      {
+        $group: {
+          _id: null,
+          numAreas: { $sum: 1 },
+          avgPopularity: { $avg: '$popularityAvarage' },
+        },
+      },
+    ]);
   } catch (err) {
     next(err);
   }
