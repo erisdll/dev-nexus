@@ -1,7 +1,6 @@
 const express = require('express');
 const techController = require('../controllers/techController');
-const { isAuth } = require('../utils/isAuth');
-const { isAdmin } = require('../utils/isAdmin');
+const { protect } = require('../controllers/authController');
 
 const router = express.Router();
 
