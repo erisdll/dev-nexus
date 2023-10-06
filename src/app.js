@@ -5,7 +5,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const swaggerUi = require('swagger-ui-express');
 
-const errorHandler = require('./middleware/errorHandler');
+const errorHandler = require('./controllers/errorController');
 const swaggerFile = require('../tools/swagger_output.json');
 const database = require('./config/database');
 const authRouter = require('./routes/authRouter');
