@@ -1,6 +1,6 @@
 const express = require('express');
 const techController = require('../controllers/techController');
-const { protect } = require('../controllers/authController');
+const authController = require('../controllers/authController');
 
 const router = express.Router();
 
@@ -11,12 +11,12 @@ router
 router
   .route('/')
   .get(techController.getAllTechs)
-  .post(isAuth, isAdmin, techController.createTech);
+  .post(authController.protect, techController.createTech);
   
 router
   .route('/:name')
   .get(techController.getTech)
-  .patch(isAuth, isAdmin, techController.updateTech)
-  .delete(isAuth, isAdmin, techController.deleteTech);
+  .patch(authController.protect, techController.updateTech)
+  .delete(authController.protect, techController.deleteTech);
 
 module.exports = router;

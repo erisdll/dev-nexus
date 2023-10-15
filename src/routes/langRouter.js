@@ -1,6 +1,6 @@
 const express = require('express');
 const langController = require('../controllers/langController');
-const { protect } = require('../controllers/authController');
+const authController = require('../controllers/authController');
 
 const router = express.Router();
 
@@ -11,12 +11,12 @@ router
 router
   .route('/')
   .get(langController.getAllLangs)
-  .post(protect, langController.createLang);
+  .post(authController.protect, langController.createLang);
 
 router
   .route('/:name')
   .get(langController.getLang)
-  .patch(protect, langController.updateLang)
-  .delete(protect, langController.deleteLang);
+  .patch(authController.protect, langController.updateLang)
+  .delete(authController.protect, langController.deleteLang);
 
 module.exports = router;
