@@ -1,7 +1,6 @@
 const express = require('express');
 const areaController = require('../controllers/areaController');
-const { isAuth } = require('../utils/isAuth');
-const { isAdmin } = require('../utils/isAdmin');
+const { protect } = require('../controllers/authController');
 
 const router = express.Router();
 
@@ -12,12 +11,12 @@ router
 router
   .route('/')
   .get(areaController.getAllAreas)
-  .post(isAuth, isAdmin, areaController.createArea);
+  .post(protect, areaController.createArea);
 
 router
   .route('/:name')
   .get(areaController.getArea)
-  .patch(isAuth, isAdmin, areaController.updateArea)
-  .delete(isAuth, isAdmin, areaController.deleteArea);
+  .patch(protect, areaController.updateArea)
+  .delete(protect, areaController.deleteArea);
 
 module.exports = router;

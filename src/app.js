@@ -10,9 +10,7 @@ const xss = require('xss-clean')
 const hpp = require('hpp')
 const swaggerUi = require('swagger-ui-express');
 
-
-const AppError = require('./utils/appError');
-const GobalerrorHandler = require('./controllers/errorController');
+const errorHandler = require('./controllers/errorController');
 const swaggerFile = require('../tools/swagger_output.json');
 const database = require('./config/database');
 const authRouter = require('./routes/authRouter');

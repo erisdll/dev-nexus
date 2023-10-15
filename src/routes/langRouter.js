@@ -1,7 +1,6 @@
 const express = require('express');
 const langController = require('../controllers/langController');
-const { isAuth } = require('../utils/isAuth');
-const { isAdmin } = require('../utils/isAdmin');
+const { protect } = require('../controllers/authController');
 
 const router = express.Router();
 
@@ -12,12 +11,12 @@ router
 router
   .route('/')
   .get(langController.getAllLangs)
-  .post(isAuth, isAdmin, langController.createLang);
+  .post(protect, langController.createLang);
 
 router
   .route('/:name')
   .get(langController.getLang)
-  .patch(isAuth, isAdmin, langController.updateLang)
-  .delete(isAuth, isAdmin, langController.deleteLang);
+  .patch(protect, langController.updateLang)
+  .delete(protect, langController.deleteLang);
 
 module.exports = router;

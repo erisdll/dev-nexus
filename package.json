@@ -4,12 +4,11 @@
   "description": "readme",
   "main": "server.js",
   "scripts": {
-    "dev:once": "node .src/server/server.js",
-    "dev:nodemon": "nodemon ./src/server/server.js",
-    "dev:swagger": "node ./tools/swagger.js",
-    "dev:jest": "jest --watchAll",
-    "dev:debug": "ndb .src/server/server.js",
-    "production": "node ./src/server/server.js"
+    "dev": "nodemon ./src/server/server.js",
+    "swagger": "node ./tools/swagger.js",
+    "jest": "jest --watchAll",
+    "debug": "ndb .src/server/server.js",
+    "prod": "node ./src/server/server.js"
   },
   "repository": {
     "type": "git",
@@ -35,7 +34,8 @@
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.3.1",
     "morgan": "~1.9.1",
-    "pug": "^3.0.2"
+    "pug": "^3.0.2",
+    "validator": "^13.11.0"
   },
   "devDependencies": {
     "directory-tree": "^3.5.1",
